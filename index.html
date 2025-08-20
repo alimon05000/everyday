@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прогресс - Ежедневный помощник</title>
+    <meta name="theme-color" content="#6d28d9">
+    <meta name="description" content="Ежедневный помощник для отслеживания целей и планирования задач">
+    <link rel="manifest" id="manifest">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDAiIGZpbGw9IiM2RDI4RDkiLz4KPHBhdGggZD0iTTk2IDU2VjEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTU2IDk2SDEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
+    <style>
+        :root {
+            --primary: #6d28d9;
+            --primary-light: #8b5cf6;
+            --secondary: #ec4899;
+            --background: #faf7fd;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        .theme-dark {
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --secondary: #f472b6;
+            --background: #111827;
+            --card: #1f2937;
+            --text: #f9fafb;
+            --text-light: #d1d5db;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-nature {
+            --primary: #059669;
+            --primary-light: #10b981;
+            --secondary: #65a30d;
+            --background: #f0fdf4;
+            --card: #ffffff;
+            --text: #064e3b;
+            --text-light: #4b5563;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 16px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background-color: var(--card);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .theme-selector {
+            position: relative;
+        }
+
+        .theme-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .theme-options {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 11;
+        }
+
+        .theme-options.show {
+            display: flex;
+        }
+
+        .theme-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--card);
+        }
+
+        .theme-option.light { background: linear-gradient(135deg, #6d28d9 0%, #ec4899 100%); }
+        .theme-option.dark { background: linear-gradient(135deg, #8b5cf6 0%, #f472b6 100%); }
+        .theme-option.nature { background: linear-gradient(135deg, #059669 0%, #65a30d 100%); }
+
+        .card {
+            background-color: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: var(--background);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--background);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-checkbox {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--primary-light);
+            border-radius: 50%;
+            margin-right: 12px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .task-checkbox:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .task-checkbox:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        .task-checkbox:checked + .task-text {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .add-task {
+            display: flex;
+            margin-top: 16px;
+        }
+
+        .task-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--primary-light);
+            border-radius: var(--radius) 0 0 var(--radius);
+            background-color: var(--background);
+            color: var(--text);
+        }
+
+        .add-button {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .goal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .goal-card {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .goal-title {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .goal-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background-color: var(--background);
+            border-radius: var(--radius);
+        }
+
+        .achievement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .achievement-info {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .achievement-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 100;
+            display: none;
+        }
+
+        .date-display {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .motivation-text {
+            text-align: center;
+            font-style: italic;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Прогресс</h1>
+            <div class="theme-selector">
+                <button class="theme-button">🎨</button>
+                <div class="theme-options">
+                    <div class="theme-option light" data-theme="light"></div>
+                    <div class="theme-option dark" data-theme="dark"></div>
+                    <div class="theme-option nature" data-theme="nature"></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="card">
+            <div class="card-title">
+                Ежедневный прогресс
+                <span id="daily-percentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="daily-progress" style="width: 0%"></div>
+            </div>
+            <p class="motivation-text" id="daily-motivation">Начни выполнять задачи для достижения прогресса!</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                Сегодняшние задачи
+                <div class="date-display" id="today-date"></div>
+            </div>
+            <ul class="task-list" id="daily-tasks">
+                <li class="task-item">
+                    <input type="checkbox" class="task-checkbox">
+                    <span class="task-text">Пример задачи - нажмите для завершения</span>
+                </li>
+            </ul>
+            <div class="add-task">
+                <input type="text" class="task-input" id="daily-input" placeholder="Добавить задачу...">
+                <button class="add-button" id="daily-add">+</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Цели</div>
+            <div class="goal-grid">
+                <div class="goal-card">
+                    <div class="goal-title">Недельные</div>
+                    <div class="goal-value" id="weekly-value">2/5</div>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-title">Месячные</div>
+                    <div class="goal-value" id="monthly-value">7/20</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Достижения</div>
+            <div class="achievement">
+                <div class="achievement-icon">🔥</div>
+                <div class="achievement-info">
+                    <div class="achievement-title">Серия выполненных задач</div>
+                    <div class="achievement-desc">Выполняйте задачи ежедневно 7 дней подряд</div>
+                </div>
+            </div>
+            <div class="achievement">
+                <div class="achievement-icon">⭐</div>
+                <div class="achievement-info">
+                    <div class="achievement-title">Целеустремленный</div>
+                    <div class="achievement-desc">Достигните 10 недельных целей</div>
+                </div>
+            </div>
+            <div class="achievement">
+                <div class="achievement-icon">🚀</div>
+                <div class="achievement-info">
+                    <div class="achievement-title">Производительность</div>
+                    <div class="achievement-desc">Выполните все задачи дня 5 раз</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="install-btn" id="install-button">+</button>
+
+    <script>
+        // Установка текущей даты
+        function setDate() {
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            const today = new Date();
+            document.getElementById('today-date').textContent = today.toLocaleDateString('ru-RU', options);
+        }
+
+        // Управление задачами
+        function setupTasks() {
+            const taskList = document.getElementById('daily-tasks');
+            const taskInput = document.getElementById('daily-input');
+            const addButton = document.getElementById('daily-add');
+            
+            // Загрузка задач из localStorage
+            loadTasks();
+            updateProgress();
+            
+            // Добавление новой задачи
+            addButton.addEventListener('click', addTask);
+            taskInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addTask();
+            });
+            
+            // Отметка выполнения задач
+            taskList.addEventListener('change', (e) => {
+                if (e.target.classList.contains('task-checkbox')) {
+                    updateProgress();
+                    saveTasks();
+                }
+            });
+            
+            function addTask() {
+                const taskText = taskInput.value.trim();
+                if (taskText) {
+                    const li = document.createElement('li');
+                    li.className = 'task-item';
+                    li.innerHTML = `
+                        <input type="checkbox" class="task-checkbox">
+                        <span class="task-text">${taskText}</span>
+                    `;
+                    taskList.appendChild(li);
+                    taskInput.value = '';
+                    updateProgress();
+                    saveTasks();
+                }
+            }
+            
+            function saveTasks() {
+                const tasks = [];
+                document.querySelectorAll('.task-item').forEach(item => {
+                    tasks.push({
+                        text: item.querySelector('.task-text').textContent,
+                        completed: item.querySelector('.task-checkbox').checked
+                    });
+                });
+                localStorage.setItem('dailyTasks', JSON.stringify(tasks));
+            }
+            
+            function loadTasks() {
+                const tasks = JSON.parse(localStorage.getItem('dailyTasks') || '[]');
+                taskList.innerHTML = '';
+                
+                if (tasks.length === 0) {
+                    // Добавляем пример задачи если список пуст
+                    const li = document.createElement('li');
+                    li.className = 'task-item';
+                    li.innerHTML = `
+                        <input type="checkbox" class="task-checkbox">
+                        <span class="task-text">Пример задачи - нажмите для завершения</span>
+                    `;
+                    taskList.appendChild(li);
+                } else {
+                    tasks.forEach(task => {
+                        const li = document.createElement('li');
+                        li.className = 'task-item';
+                        li.innerHTML = `
+                            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                            <span class="task-text">${task.text}</span>
+                        `;
+                        taskList.appendChild(li);
+                    });
+                }
+            }
+            
+            function updateProgress() {
+                const totalTasks = document.querySelectorAll('.task-item').length;
+                const completedTasks = document.querySelectorAll('.task-checkbox:checked').length;
+                const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                
+                document.getElementById('daily-progress').style.width = `${percentage}%`;
+                document.getElementById('daily-percentage').textContent = `${percentage}%`;
+                
+                // Обновление мотивационного текста
+                const motivationText = document.getElementById('daily-motivation');
+                if (percentage === 0) {
+                    motivationText.textContent = "Начни выполнять задачи для достижения прогресса!";
+                } else if (percentage < 50) {
+                    motivationText.textContent = "Так держать! Продолжай в том же духе!";
+                } else if (percentage < 100) {
+                    motivationText.textContent = "Отличная работа! Ты уже на полпути!";
+                } else {
+                    motivationText.textContent = "Потрясающе! Все задачи выполнены!";
+                }
+            }
+        }
+
+        // Управление темами
+        function setupThemes() {
+            const themeButton = document.querySelector('.theme-button');
+            const themeOptions = document.querySelector('.theme-options');
+            const themeOptionsList = document.querySelectorAll('.theme-option');
+            
+            // Загрузка темы из localStorage
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.className = `theme-${savedTheme}`;
+            
+            themeButton.addEventListener('click', () => {
+                themeOptions.classList.toggle('show');
+            });
+            
+            themeOptionsList.forEach(option => {
+                option.addEventListener('click', () => {
+                    const theme = option.getAttribute('data-theme');
+                    document.body.className = `theme-${theme}`;
+                    localStorage.setItem('theme', theme);
+                    themeOptions.classList.remove('show');
+                });
+            });
+            
+            // Закрытие меню тем при клике вне его
+            document.addEventListener('click', (e) => {
+                if (!themeButton.contains(e.target) && !themeOptions.contains(e.target)) {
+                    themeOptions.classList.remove('show');
+                }
+            });
+        }
+
+        // PWA функциональность
+        function setupPWA() {
+            const installButton = document.getElementById('install-button');
+            let deferredPrompt;
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.style.display = 'block';
+            });
+            
+            installButton.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installButton.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+            
+            // Генерация manifest
+            const manifest = {
+                "name": "Прогресс - Ежедневный помощник",
+                "short_name": "Прогресс",
+                "description": "Ежедневный помощник для отслеживания целей и планирования задач",
+                "start_url": "/",
+                "display": "standalone",
+                "background_color": "#faf7fd",
+                "theme_color": "#6d28d9",
+                "icons": [
+                    {
+                        "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDAiIGZpbGw9IiM2RDI4RDkiLz4KPHBhdGggZD0iTTk2IDU2VjEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTU2IDk2SDEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+",
+                        "sizes": "192x192",
+                        "type": "image/svg+xml"
+                    }
+                ]
+            };
+            
+            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(manifestBlob);
+            document.getElementById('manifest').href = manifestURL;
+            
+            // Регистрация Service Worker
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', (event) => {
+                        self.skipWaiting();
+                    });
+                    
+                    self.addEventListener('fetch', (event) => {
+                        // Можно добавить кэширование для офлайн-работы
+                    });
+                `;
+                
+                const swBlob = new Blob([swCode], {type: 'application/javascript'});
+                const swURL = URL.createObjectURL(swBlob);
+                
+                navigator.serviceWorker.register(swURL)
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            }
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            setDate();
+            setupTasks();
+            setupThemes();
+            setupPWA();
+            
+            // Обновляем значения целей (в реальном приложении эти данные брались бы из хранилища)
+            document.getElementById('weekly-value').textContent = "2/5";
+            document.getElementById('monthly-value').textContent = "7/20";
+        });
+    </script>
+</body>
+</html>
