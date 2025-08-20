@@ -8,6 +8,7 @@
     <meta name="description" content="Ежедневный помощник для отслеживания целей и планирования задач">
     <link rel="manifest" id="manifest">
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDAiIGZpbGw9IiM2RDI4RDkiLz4KPHBhdGggZD0iTTk2IDU2VjEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTU2IDk2SDEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #6d28d9;
@@ -23,6 +24,10 @@
             --border: #e5e7eb;
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             --radius: 10px;
+            --ios-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            --ios-highlight: #007AFF;
+            --ios-gray: #8E8E93;
+            --ios-light-gray: #F2F2F7;
         }
 
         .theme-dark {
@@ -35,6 +40,10 @@
             --text-light: #d1d5db;
             --border: #374151;
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --ios-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+            --ios-highlight: #0A84FF;
+            --ios-gray: #8E8E93;
+            --ios-light-gray: #1C1C1E;
         }
 
         .theme-nature {
@@ -46,6 +55,9 @@
             --text: #064e3b;
             --text-light: #4b5563;
             --border: #bbf7d0;
+            --ios-highlight: #059669;
+            --ios-gray: #059669;
+            --ios-light-gray: #F0FDF4;
         }
 
         * {
@@ -61,6 +73,7 @@
             color: var(--text);
             line-height: 1.6;
             padding-bottom: 100px;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
@@ -138,29 +151,47 @@
         .theme-option.nature { background: linear-gradient(135deg, #059669 0%, #65a30d 100%); }
 
         /* iOS-style tabs */
+        .tabs-container {
+            position: sticky;
+            top: 82px;
+            z-index: 9;
+            background-color: var(--background);
+            padding: 10px 0;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+
         .tabs {
-            display: flex;
-            background-color: var(--card);
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
+            display: inline-flex;
+            background-color: var(--ios-light-gray);
+            border-radius: 50px;
+            padding: 4px;
+            box-shadow: var(--ios-card-shadow);
+            min-width: 100%;
         }
 
         .tab {
-            flex: 1;
-            text-align: center;
-            padding: 16px;
+            padding: 10px 20px;
             cursor: pointer;
             font-weight: 500;
-            color: var(--text-light);
-            border-bottom: 2px solid transparent;
+            color: var(--ios-gray);
+            border-radius: 50px;
             transition: all 0.3s;
+            text-align: center;
+            flex-shrink: 0;
         }
 
         .tab.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
+            color: white;
+            background-color: var(--ios-highlight);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
 
         .tab-content {
@@ -173,10 +204,10 @@
 
         .card {
             background-color: var(--card);
-            border-radius: var(--radius);
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: var(--shadow);
+            box-shadow: var(--ios-card-shadow);
         }
 
         .card-title {
@@ -204,28 +235,41 @@
             transition: width 0.5s ease;
         }
 
-        /* Table styles */
-        .data-table {
+        /* iOS-style table */
+        .ios-table {
             width: 100%;
             border-collapse: collapse;
             margin: 16px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--ios-card-shadow);
         }
 
-        .data-table th,
-        .data-table td {
-            padding: 12px;
+        .ios-table th,
+        .ios-table td {
+            padding: 16px;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
 
-        .data-table th {
+        .ios-table th {
             font-weight: 600;
             color: var(--text-light);
             font-size: 0.9rem;
+            background-color: var(--ios-light-gray);
         }
 
-        .data-table tr:last-child td {
+        .ios-table tr:last-child td {
             border-bottom: none;
+        }
+
+        .ios-table tr {
+            background-color: var(--card);
+            transition: background-color 0.2s;
+        }
+
+        .ios-table tr:active {
+            background-color: var(--border);
         }
 
         .checkbox-cell {
@@ -234,13 +278,15 @@
 
         .task-checkbox {
             appearance: none;
-            width: 20px;
-            height: 20px;
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
             border: 2px solid var(--primary-light);
-            border-radius: 4px;
+            border-radius: 50%;
             cursor: pointer;
             position: relative;
             margin-right: 8px;
+            transition: all 0.2s;
         }
 
         .task-checkbox:checked {
@@ -271,25 +317,28 @@
         .add-form {
             display: flex;
             margin-top: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--ios-card-shadow);
         }
 
         .task-input {
             flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius) 0 0 var(--radius);
-            background-color: var(--background);
+            padding: 16px;
+            border: none;
+            background-color: var(--card);
             color: var(--text);
+            font-size: 1rem;
         }
 
         .add-button {
-            padding: 12px 16px;
+            padding: 16px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            border-radius: 0 var(--radius) var(--radius) 0;
             cursor: pointer;
             font-weight: 600;
+            font-size: 1.2rem;
         }
 
         .goal-grid {
@@ -301,9 +350,10 @@
         .goal-card {
             background: linear-gradient(135deg, var(--primary-light), var(--primary));
             color: white;
-            border-radius: var(--radius);
+            border-radius: 16px;
             padding: 16px;
             text-align: center;
+            box-shadow: var(--ios-card-shadow);
         }
 
         .goal-title {
@@ -320,22 +370,24 @@
             display: flex;
             align-items: center;
             margin-bottom: 12px;
-            padding: 12px;
-            background-color: var(--background);
-            border-radius: var(--radius);
+            padding: 16px;
+            background-color: var(--card);
+            border-radius: 16px;
+            box-shadow: var(--ios-card-shadow);
         }
 
         .achievement-icon {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
+            margin-right: 16px;
             color: white;
             font-weight: bold;
+            font-size: 1.2rem;
         }
 
         .achievement-info {
@@ -357,7 +409,7 @@
             background-color: var(--border);
             border-radius: 3px;
             overflow: hidden;
-            margin-top: 4px;
+            margin-top: 8px;
         }
 
         .achievement-progress-fill {
@@ -374,10 +426,11 @@
         }
 
         .stat-card {
-            background-color: var(--background);
-            border-radius: var(--radius);
+            background-color: var(--card);
+            border-radius: 16px;
             padding: 16px;
             text-align: center;
+            box-shadow: var(--ios-card-shadow);
         }
 
         .stat-value {
@@ -403,7 +456,7 @@
             width: 60px;
             height: 60px;
             font-size: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: var(--ios-card-shadow);
             cursor: pointer;
             z-index: 100;
             display: none;
@@ -433,6 +486,342 @@
             margin-bottom: 16px;
             opacity: 0.5;
         }
+
+        /* iOS-style context menu */
+        .context-menu {
+            position: fixed;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+        }
+
+        .context-menu-item {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .context-menu-item:active {
+            background-color: var(--border);
+        }
+
+        .context-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--ios-gray);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+        }
+
+        .action-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Calendar styles */
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-title {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+        }
+
+        .calendar-day {
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .calendar-day:hover {
+            background-color: var(--border);
+        }
+
+        .calendar-day.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-light);
+        }
+
+        .calendar-day.has-tasks::after {
+            content: "";
+            display: block;
+            width: 4px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            margin: 4px auto 0;
+        }
+
+        /* Chart styles */
+        .chart-container {
+            height: 200px;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 10px;
+            background: linear-gradient(to top, var(--primary), var(--secondary));
+            border-radius: 3px 3px 0 0;
+            transition: height 0.5s ease;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.8rem;
+            text-align: center;
+            width: 10px;
+        }
+
+        /* Subtask styles */
+        .subtask-list {
+            margin-left: 20px;
+            margin-top: 8px;
+            border-left: 2px solid var(--border);
+            padding-left: 15px;
+        }
+
+        .subtask-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .subtask-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--primary-light);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            margin-right: 8px;
+        }
+
+        .subtask-checkbox:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .subtask-checkbox:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .subtask-text {
+            font-size: 0.9rem;
+        }
+
+        .subtask-checkbox:checked + .subtask-text {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        /* Sortable styles */
+        .sortable-ghost {
+            opacity: 0.5;
+        }
+
+        .sortable-chosen {
+            background-color: var(--border);
+        }
+
+        /* Modal styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal {
+            background-color: var(--card);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--background);
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--background);
+            color: var(--text);
+        }
+
+        /* iOS Switch */
+        .ios-switch {
+            position: relative;
+            display: inline-block;
+            width: 51px;
+            height: 31px;
+        }
+
+        .ios-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .ios-switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .ios-switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 27px;
+            width: 27px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .ios-switch-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .ios-switch-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Drag handle */
+        .drag-handle {
+            cursor: move;
+            color: var(--text-light);
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -449,11 +838,15 @@
             </div>
         </header>
 
-        <div class="tabs">
-            <div class="tab active" data-tab="today">Сегодня</div>
-            <div class="tab" data-tab="goals">Цели</div>
-            <div class="tab" data-tab="achievements">Достижения</div>
-            <div class="tab" data-tab="stats">Статистика</div>
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="today">Сегодня</div>
+                <div class="tab" data-tab="goals">Цели</div>
+                <div class="tab" data-tab="calendar">Календарь</div>
+                <div class="tab" data-tab="achievements">Достижения</div>
+                <div class="tab" data-tab="stats">Статистика</div>
+                <div class="tab" data-tab="history">История</div>
+            </div>
         </div>
 
         <!-- Today Tab -->
@@ -475,24 +868,22 @@
                     <div class="date-display" id="today-date"></div>
                 </div>
                 
-                <table class="data-table">
+                <div class="action-buttons">
+                    <button class="action-btn" id="sort-time"><i class="fas fa-clock"></i></button>
+                    <button class="action-btn" id="sort-priority"><i class="fas fa-exclamation-circle"></i></button>
+                </div>
+                
+                <table class="ios-table">
                     <thead>
                         <tr>
                             <th class="checkbox-cell"></th>
                             <th>Задача</th>
                             <th>Время</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody id="daily-tasks">
-                        <tr>
-                            <td class="checkbox-cell">
-                                <input type="checkbox" class="task-checkbox">
-                            </td>
-                            <td>
-                                <span class="task-text">Пример задачи - нажмите для завершения</span>
-                            </td>
-                            <td>09:00</td>
-                        </tr>
+                        <!-- Tasks will be populated here -->
                     </tbody>
                 </table>
                 
@@ -508,41 +899,17 @@
             <div class="card">
                 <div class="card-title">Мои цели</div>
                 
-                <table class="data-table">
+                <table class="ios-table">
                     <thead>
                         <tr>
                             <th class="checkbox-cell"></th>
                             <th>Цель</th>
                             <th>Прогресс</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody id="goals-list">
-                        <tr>
-                            <td class="checkbox-cell">
-                                <input type="checkbox" class="task-checkbox">
-                            </td>
-                            <td>
-                                <span class="task-text">Прочитать книгу (30 мин в день)</span>
-                            </td>
-                            <td>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 30%"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="checkbox-cell">
-                                <input type="checkbox" class="task-checkbox">
-                            </td>
-                            <td>
-                                <span class="task-text">Пробежать 5 км без остановки</span>
-                            </td>
-                            <td>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 60%"></div>
-                                </div>
-                            </td>
-                        </tr>
+                        <!-- Goals will be populated here -->
                     </tbody>
                 </table>
                 
@@ -564,53 +931,36 @@
             </div>
         </div>
 
+        <!-- Calendar Tab -->
+        <div class="tab-content" id="calendar-tab">
+            <div class="card">
+                <div class="card-title">Календарь</div>
+                
+                <div class="calendar-nav">
+                    <button class="action-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                    <div class="calendar-title" id="calendar-month">Май 2023</div>
+                    <button class="action-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <div class="calendar-grid" id="calendar-days">
+                    <!-- Calendar days will be populated here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Задачи на <span id="selected-date"></span></div>
+                <div id="date-tasks">
+                    <!-- Tasks for selected date will be populated here -->
+                </div>
+            </div>
+        </div>
+
         <!-- Achievements Tab -->
         <div class="tab-content" id="achievements-tab">
             <div class="card">
                 <div class="card-title">Достижения</div>
-                
-                <div class="achievement">
-                    <div class="achievement-icon">🔥</div>
-                    <div class="achievement-info">
-                        <div class="achievement-title">Серия выполненных задач</div>
-                        <div class="achievement-desc">Выполняйте задачи ежедневно 7 дней подряд</div>
-                        <div class="achievement-progress">
-                            <div class="achievement-progress-fill" style="width: 30%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement">
-                    <div class="achievement-icon">⭐</div>
-                    <div class="achievement-info">
-                        <div class="achievement-title">Целеустремленный</div>
-                        <div class="achievement-desc">Достигните 10 недельных целей</div>
-                        <div class="achievement-progress">
-                            <div class="achievement-progress-fill" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement">
-                    <div class="achievement-icon">🚀</div>
-                    <div class="achievement-info">
-                        <div class="achievement-title">Производительность</div>
-                        <div class="achievement-desc">Выполните все задачи дня 5 раз</div>
-                        <div class="achievement-progress">
-                            <div class="achievement-progress-fill" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement">
-                    <div class="achievement-icon">📚</div>
-                    <div class="achievement-info">
-                        <div class="achievement-title">Книжный червь</div>
-                        <div class="achievement-desc">Прочтите 500 страниц</div>
-                        <div class="achievement-progress">
-                            <div class="achievement-progress-fill" style="width: 15%"></div>
-                        </div>
-                    </div>
+                <div id="achievements-list">
+                    <!-- Achievements will be populated here -->
                 </div>
             </div>
         </div>
@@ -641,32 +991,150 @@
             </div>
             
             <div class="card">
-                <div class="card-title">История активности</div>
-                <div class="empty-state">
-                    <div class="empty-state-icon">📊</div>
-                    <p>Здесь будет отображаться ваша активность</p>
+                <div class="card-title">Продуктивность по дням недели</div>
+                <div class="chart-container" id="week-chart">
+                    <!-- Chart will be rendered here -->
                 </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div class="tab-content" id="history-tab">
+            <div class="card">
+                <div class="card-title">История активности</div>
+                <table class="ios-table">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Задач</th>
+                            <th>Выполнено</th>
+                            <th>Прогресс</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table">
+                        <!-- History will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="context-menu">
+        <div class="context-menu-item" data-action="edit">
+            <i class="fas fa-edit"></i>
+            <span>Редактировать</span>
+        </div>
+        <div class="context-menu-item" data-action="delete">
+            <i class="fas fa-trash"></i>
+            <span>Удалить</span>
+        </div>
+        <div class="context-menu-item" data-action="subtasks">
+            <i class="fas fa-tasks"></i>
+            <span>Подзадачи</span>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal-backdrop" id="task-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Редактирование задачи</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Название задачи</label>
+                    <input type="text" class="form-input" id="edit-task-text">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Время</label>
+                    <input type="time" class="form-input" id="edit-task-time">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Дата</label>
+                    <input type="date" class="form-input" id="edit-task-date">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Приоритет</label>
+                    <select class="form-select" id="edit-task-priority">
+                        <option value="low">Низкий</option>
+                        <option value="medium">Средний</option>
+                        <option value="high">Высокий</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Подзадачи</label>
+                    <div id="subtasks-container">
+                        <!-- Subtasks will be populated here -->
+                    </div>
+                    <button class="btn btn-secondary" id="add-subtask">Добавить подзадачу</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-edit">Отмена</button>
+                <button class="btn btn-primary" id="save-task">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div class="modal-backdrop" id="goal-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Редактирование цели</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Название цели</label>
+                    <input type="text" class="form-input" id="edit-goal-text">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Текущий прогресс</label>
+                    <input type="number" class="form-input" id="edit-goal-progress" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Целевое значение</label>
+                    <input type="number" class="form-input" id="edit-goal-target" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Тип цели</label>
+                    <select class="form-select" id="edit-goal-type">
+                        <option value="weekly">Недельная</option>
+                        <option value="monthly">Месячная</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-goal-edit">Отмена</button>
+                <button class="btn btn-primary" id="save-goal">Сохранить</button>
             </div>
         </div>
     </div>
 
     <button class="install-btn" id="install-button">+</button>
 
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
     <script>
         // Data structure
         let appData = {
             tasks: [],
             goals: [],
             achievements: [],
+            history: [],
+            settings: {
+                theme: 'light',
+                sortBy: 'time',
+                showCompleted: true
+            },
             stats: {
                 totalTasks: 0,
                 completedTasks: 0,
                 currentStreak: 0,
                 lastActiveDate: null
             },
-            settings: {
-                theme: 'light'
-            }
+            currentCalendarDate: new Date()
         };
 
         // Initialize the app
@@ -677,6 +1145,9 @@
             setupTasks();
             setupGoals();
             setupThemes();
+            setupCalendar();
+            setupContextMenu();
+            setupModals();
             setupPWA();
             updateUI();
         }
@@ -686,13 +1157,18 @@
             const savedData = localStorage.getItem('progressProData');
             if (savedData) {
                 appData = JSON.parse(savedData);
+                // Convert string dates back to Date objects
+                appData.currentCalendarDate = new Date(appData.currentCalendarDate);
+                appData.tasks.forEach(task => {
+                    if (task.date) task.date = new Date(task.date).toISOString().split('T')[0];
+                });
             } else {
                 // Initialize with default data if no saved data exists
                 appData.achievements = [
-                    { id: 1, title: "Серия выполненных задач", description: "Выполняйте задачи ежедневно 7 дней подряд", progress: 0, target: 7, icon: "🔥" },
-                    { id: 2, title: "Целеустремленный", description: "Достигните 10 недельных целей", progress: 0, target: 10, icon: "⭐" },
-                    { id: 3, title: "Производительность", description: "Выполните все задачи дня 5 раз", progress: 0, target: 5, icon: "🚀" },
-                    { id: 4, title: "Книжный червь", description: "Прочтите 500 страниц", progress: 75, target: 500, icon: "📚" }
+                    { id: 1, title: "Серия выполненных задач", description: "Выполняйте задачи ежедневно 7 дней подряд", progress: 0, target: 7, icon: "🔥", completed: false },
+                    { id: 2, title: "Целеустремленный", description: "Достигните 10 недельных целей", progress: 0, target: 10, icon: "⭐", completed: false },
+                    { id: 3, title: "Производительность", description: "Выполните все задачи дня 5 раз", progress: 0, target: 5, icon: "🚀", completed: false },
+                    { id: 4, title: "Книжный червь", description: "Прочтите 500 страниц", progress: 75, target: 500, icon: "📚", completed: false }
                 ];
                 
                 // Add example task if no tasks exist
@@ -702,7 +1178,9 @@
                         text: "Пример задачи - нажмите для завершения",
                         completed: false,
                         date: new Date().toISOString().split('T')[0],
-                        time: "09:00"
+                        time: "09:00",
+                        priority: "medium",
+                        subtasks: []
                     });
                 }
                 
@@ -735,6 +1213,13 @@
                     tab.classList.add('active');
                     const tabId = tab.getAttribute('data-tab');
                     document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    // Refresh content for specific tabs
+                    if (tabId === 'calendar') {
+                        renderCalendar();
+                    } else if (tabId === 'history') {
+                        renderHistoryTable();
+                    }
                 });
             });
         }
@@ -744,6 +1229,8 @@
             const taskList = document.getElementById('daily-tasks');
             const taskInput = document.getElementById('daily-input');
             const addButton = document.getElementById('daily-add');
+            const sortTimeBtn = document.getElementById('sort-time');
+            const sortPriorityBtn = document.getElementById('sort-priority');
             
             // Load tasks
             renderTasks();
@@ -755,6 +1242,19 @@
                 if (e.key === 'Enter') addTask();
             });
             
+            // Sort tasks
+            sortTimeBtn.addEventListener('click', () => {
+                appData.settings.sortBy = 'time';
+                saveData();
+                renderTasks();
+            });
+            
+            sortPriorityBtn.addEventListener('click', () => {
+                appData.settings.sortBy = 'priority';
+                saveData();
+                renderTasks();
+            });
+            
             // Mark task as completed
             taskList.addEventListener('change', (e) => {
                 if (e.target.classList.contains('task-checkbox')) {
@@ -764,13 +1264,50 @@
                         task.completed = e.target.checked;
                         if (task.completed) {
                             appData.stats.completedTasks++;
+                            // Check if all subtasks are completed
+                            if (task.subtasks && task.subtasks.length > 0) {
+                                const allSubtasksCompleted = task.subtasks.every(st => st.completed);
+                                if (allSubtasksCompleted) {
+                                    // Award achievement for completing a task with all subtasks
+                                    updateAchievementProgress('task_with_subtasks', 1);
+                                }
+                            }
                         } else {
                             appData.stats.completedTasks--;
                         }
                         saveData();
                         updateProgress();
                         updateUI();
+                        updateAchievements();
                     }
+                }
+            });
+            
+            // Make tasks sortable
+            new Sortable(taskList, {
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onEnd: function(evt) {
+                    // Reorder tasks based on drag and drop
+                    const today = new Date().toISOString().split('T')[0];
+                    const todayTasks = appData.tasks.filter(task => task.date === today);
+                    
+                    // Get the new order of task IDs
+                    const newOrder = Array.from(taskList.querySelectorAll('tr')).map(tr => parseInt(tr.dataset.id));
+                    
+                    // Reorder the tasks array
+                    const newTasksOrder = [];
+                    newOrder.forEach(id => {
+                        const task = todayTasks.find(t => t.id === id);
+                        if (task) newTasksOrder.push(task);
+                    });
+                    
+                    // Remove today's tasks and add them back in the new order
+                    appData.tasks = appData.tasks.filter(task => task.date !== today);
+                    appData.tasks = appData.tasks.concat(newTasksOrder);
+                    
+                    saveData();
                 }
             });
             
@@ -786,7 +1323,9 @@
                         text: taskText,
                         completed: false,
                         date: date,
-                        time: time
+                        time: time,
+                        priority: 'medium',
+                        subtasks: []
                     };
                     
                     appData.tasks.push(newTask);
@@ -802,14 +1341,29 @@
             
             function renderTasks() {
                 const today = new Date().toISOString().split('T')[0];
-                const todayTasks = appData.tasks.filter(task => task.date === today);
+                let todayTasks = appData.tasks.filter(task => task.date === today);
                 
+                // Sort tasks based on user preference
+                if (appData.settings.sortBy === 'time') {
+                    todayTasks.sort((a, b) => {
+                        const timeA = a.time || '00:00';
+                        const timeB = b.time || '00:00';
+                        return timeA.localeCompare(timeB);
+                    });
+                } else if (appData.settings.sortBy === 'priority') {
+                    const priorityOrder = { high: 0, medium: 1, low: 2 };
+                    todayTasks.sort((a, b) => {
+                        return priorityOrder[a.priority] - priorityOrder[b.priority];
+                    });
+                }
+                
+                const taskList = document.getElementById('daily-tasks');
                 taskList.innerHTML = '';
                 
                 if (todayTasks.length === 0) {
                     taskList.innerHTML = `
                         <tr>
-                            <td colspan="3" class="empty-state">
+                            <td colspan="4" class="empty-state">
                                 <div class="empty-state-icon">📝</div>
                                 <p>Задачи на сегодня отсутствуют</p>
                             </td>
@@ -817,6 +1371,9 @@
                     `;
                 } else {
                     todayTasks.forEach(task => {
+                        const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+                        const completedSubtasks = hasSubtasks ? task.subtasks.filter(st => st.completed).length : 0;
+                        
                         const tr = document.createElement('tr');
                         tr.dataset.id = task.id;
                         tr.innerHTML = `
@@ -825,10 +1382,26 @@
                             </td>
                             <td>
                                 <span class="task-text">${task.text}</span>
+                                ${hasSubtasks ? `<div class="subtask-progress">${completedSubtasks}/${task.subtasks.length}</div>` : ''}
                             </td>
                             <td>${task.time}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <i class="fas fa-bars drag-handle"></i>
+                                    <i class="fas fa-ellipsis-v context-menu-btn" data-id="${task.id}" data-type="task"></i>
+                                </div>
+                            </td>
                         `;
                         taskList.appendChild(tr);
+                    });
+                    
+                    // Add event listeners to context menu buttons
+                    document.querySelectorAll('.context-menu-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const id = parseInt(e.currentTarget.dataset.id);
+                            const type = e.currentTarget.dataset.type;
+                            showContextMenu(e.clientX, e.clientY, id, type);
+                        });
                     });
                 }
             }
@@ -853,9 +1426,14 @@
                     motivationText.textContent = "Отличная работа! Ты уже на полпути!";
                 } else if (percentage === 100 && totalTasks > 0) {
                     motivationText.textContent = "Потрясающе! Все задачи выполнены!";
+                    // Award achievement for completing all daily tasks
+                    updateAchievementProgress('all_daily_tasks', 1);
                 } else {
                     motivationText.textContent = "Добавь задачи на сегодня для начала работы!";
                 }
+                
+                // Update streak
+                updateStreak();
             }
         }
 
@@ -872,6 +1450,27 @@
             addButton.addEventListener('click', addGoal);
             goalInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') addGoal();
+            });
+            
+            // Make goals list sortable
+            new Sortable(document.getElementById('goals-list'), {
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                onEnd: function(evt) {
+                    // Reorder goals based on drag and drop
+                    const newOrder = Array.from(document.getElementById('goals-list').querySelectorAll('tr')).map(tr => parseInt(tr.dataset.id));
+                    
+                    // Reorder the goals array
+                    const newGoalsOrder = [];
+                    newOrder.forEach(id => {
+                        const goal = appData.goals.find(g => g.id === id);
+                        if (goal) newGoalsOrder.push(goal);
+                    });
+                    
+                    appData.goals = newGoalsOrder;
+                    saveData();
+                }
             });
             
             function addGoal() {
@@ -902,7 +1501,7 @@
                 if (appData.goals.length === 0) {
                     goalsList.innerHTML = `
                         <tr>
-                            <td colspan="3" class="empty-state">
+                            <td colspan="4" class="empty-state">
                                 <div class="empty-state-icon">🎯</div>
                                 <p>У вас пока нет целей</p>
                             </td>
@@ -925,8 +1524,49 @@
                                     <div class="progress-fill" style="width: ${progressPercentage}%"></div>
                                 </div>
                             </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <i class="fas fa-bars drag-handle"></i>
+                                    <i class="fas fa-ellipsis-v context-menu-btn" data-id="${goal.id}" data-type="goal"></i>
+                                </div>
+                            </td>
                         `;
                         goalsList.appendChild(tr);
+                    });
+                    
+                    // Add event listeners to context menu buttons
+                    document.querySelectorAll('.context-menu-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const id = parseInt(e.currentTarget.dataset.id);
+                            const type = e.currentTarget.dataset.type;
+                            showContextMenu(e.clientX, e.clientY, id, type);
+                        });
+                    });
+                    
+                    // Add change event for goal checkboxes
+                    goalsList.addEventListener('change', (e) => {
+                        if (e.target.classList.contains('task-checkbox')) {
+                            const goalId = parseInt(e.target.closest('tr').dataset.id);
+                            const goal = appData.goals.find(g => g.id === goalId);
+                            if (goal) {
+                                goal.completed = e.target.checked;
+                                if (goal.completed) {
+                                    goal.progress = goal.target;
+                                    // Award achievement for completing a goal
+                                    if (goal.type === 'weekly') {
+                                        updateAchievementProgress('weekly_goals', 1);
+                                    } else if (goal.type === 'monthly') {
+                                        updateAchievementProgress('monthly_goals', 1);
+                                    }
+                                } else {
+                                    goal.progress = 0;
+                                }
+                                saveData();
+                                renderGoals();
+                                updateGoalsProgress();
+                                updateAchievements();
+                            }
+                        }
                     });
                 }
             }
@@ -941,6 +1581,455 @@
                 document.getElementById('weekly-value').textContent = `${completedWeekly}/${weeklyGoals.length}`;
                 document.getElementById('monthly-value').textContent = `${completedMonthly}/${monthlyGoals.length}`;
             }
+        }
+
+        // Setup calendar functionality
+        function setupCalendar() {
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+            
+            prevMonthBtn.addEventListener('click', () => {
+                appData.currentCalendarDate.setMonth(appData.currentCalendarDate.getMonth() - 1);
+                saveData();
+                renderCalendar();
+            });
+            
+            nextMonthBtn.addEventListener('click', () => {
+                appData.currentCalendarDate.setMonth(appData.currentCalendarDate.getMonth() + 1);
+                saveData();
+                renderCalendar();
+            });
+            
+            renderCalendar();
+        }
+        
+        function renderCalendar() {
+            const calendarDays = document.getElementById('calendar-days');
+            const calendarMonth = document.getElementById('calendar-month');
+            const selectedDate = document.getElementById('selected-date');
+            
+            const year = appData.currentCalendarDate.getFullYear();
+            const month = appData.currentCalendarDate.getMonth();
+            
+            // Set calendar title
+            const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            calendarMonth.textContent = `${monthNames[month]} ${year}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Adjust for Monday as first day of week (0 = Sunday, 1 = Monday, etc.)
+            let startDay = firstDay === 0 ? 6 : firstDay - 1;
+            
+            // Get days from previous month
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            // Clear calendar
+            calendarDays.innerHTML = '';
+            
+            // Add day names
+            const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            dayNames.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.textContent = day;
+                dayElement.style.fontWeight = 'bold';
+                calendarDays.appendChild(dayElement);
+            });
+            
+            // Add days from previous month
+            for (let i = startDay - 1; i >= 0; i--) {
+                const dayElement = document.createElement('div');
+                dayElement.textContent = daysInPrevMonth - i;
+                dayElement.classList.add('calendar-day', 'other-month');
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Add days from current month
+            const today = new Date();
+            const currentDate = new Date();
+            
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.textContent = i;
+                dayElement.classList.add('calendar-day');
+                
+                // Check if this day has tasks
+                const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                const dayTasks = appData.tasks.filter(task => task.date === dateStr);
+                
+                if (dayTasks.length > 0) {
+                    dayElement.classList.add('has-tasks');
+                }
+                
+                // Highlight today
+                if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === i) {
+                    dayElement.classList.add('active');
+                    selectedDate.textContent = `${i} ${monthNames[month]} ${year}`;
+                    renderDateTasks(dateStr);
+                }
+                
+                // Add click event
+                dayElement.addEventListener('click', () => {
+                    document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('active'));
+                    dayElement.classList.add('active');
+                    selectedDate.textContent = `${i} ${monthNames[month]} ${year}`;
+                    renderDateTasks(dateStr);
+                });
+                
+                calendarDays.appendChild(dayElement);
+            }
+            
+            // Calculate how many days from next month to show
+            const totalCells = 42; // 6 rows x 7 days
+            const daysSoFar = startDay + daysInMonth;
+            const daysNextMonth = totalCells - daysSoFar;
+            
+            // Add days from next month
+            for (let i = 1; i <= daysNextMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.textContent = i;
+                dayElement.classList.add('calendar-day', 'other-month');
+                calendarDays.appendChild(dayElement);
+            }
+        }
+        
+        function renderDateTasks(date) {
+            const dateTasksContainer = document.getElementById('date-tasks');
+            const tasks = appData.tasks.filter(task => task.date === date);
+            
+            if (tasks.length === 0) {
+                dateTasksContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <p>На эту дату задач нет</p>
+                    </div>
+                `;
+            } else {
+                let tasksHTML = '';
+                tasks.forEach(task => {
+                    tasksHTML += `
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} data-id="${task.id}">
+                            <span class="task-text">${task.text}</span>
+                            <span class="task-time">${task.time}</span>
+                        </div>
+                    `;
+                });
+                dateTasksContainer.innerHTML = tasksHTML;
+                
+                // Add event listeners to checkboxes
+                dateTasksContainer.querySelectorAll('.task-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => {
+                        const taskId = parseInt(e.target.dataset.id);
+                        const task = appData.tasks.find(t => t.id === taskId);
+                        if (task) {
+                            task.completed = e.target.checked;
+                            if (task.completed) {
+                                appData.stats.completedTasks++;
+                            } else {
+                                appData.stats.completedTasks--;
+                            }
+                            saveData();
+                            updateProgress();
+                            updateUI();
+                        }
+                    });
+                });
+            }
+        }
+
+        // Setup context menu
+        function setupContextMenu() {
+            const contextMenu = document.getElementById('context-menu');
+            let currentItemId = null;
+            let currentItemType = null;
+            
+            // Hide context menu when clicking elsewhere
+            document.addEventListener('click', () => {
+                contextMenu.style.display = 'none';
+            });
+            
+            // Prevent context menu from closing when clicking on it
+            contextMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Handle context menu actions
+            contextMenu.querySelectorAll('.context-menu-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const action = e.currentTarget.dataset.action;
+                    
+                    if (currentItemType === 'task') {
+                        if (action === 'edit') {
+                            openTaskModal(currentItemId);
+                        } else if (action === 'delete') {
+                            deleteTask(currentItemId);
+                        } else if (action === 'subtasks') {
+                            openTaskModal(currentItemId, true);
+                        }
+                    } else if (currentItemType === 'goal') {
+                        if (action === 'edit') {
+                            openGoalModal(currentItemId);
+                        } else if (action === 'delete') {
+                            deleteGoal(currentItemId);
+                        }
+                    }
+                    
+                    contextMenu.style.display = 'none';
+                });
+            });
+            
+            window.showContextMenu = function(x, y, id, type) {
+                currentItemId = id;
+                currentItemType = type;
+                
+                // Adjust position to stay within viewport
+                const menuWidth = 200;
+                const menuHeight = contextMenu.offsetHeight;
+                
+                if (x + menuWidth > window.innerWidth) {
+                    x = window.innerWidth - menuWidth - 10;
+                }
+                
+                if (y + menuHeight > window.innerHeight) {
+                    y = window.innerHeight - menuHeight - 10;
+                }
+                
+                contextMenu.style.left = x + 'px';
+                contextMenu.style.top = y + 'px';
+                contextMenu.style.display = 'block';
+            };
+        }
+        
+        function openTaskModal(taskId, showSubtasks = false) {
+            const task = appData.tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            const modal = document.getElementById('task-modal');
+            const textInput = document.getElementById('edit-task-text');
+            const timeInput = document.getElementById('edit-task-time');
+            const dateInput = document.getElementById('edit-task-date');
+            const prioritySelect = document.getElementById('edit-task-priority');
+            const subtasksContainer = document.getElementById('subtasks-container');
+            
+            // Fill form with task data
+            textInput.value = task.text;
+            timeInput.value = task.time;
+            dateInput.value = task.date;
+            prioritySelect.value = task.priority;
+            
+            // Render subtasks
+            subtasksContainer.innerHTML = '';
+            if (task.subtasks && task.subtasks.length > 0) {
+                task.subtasks.forEach((subtask, index) => {
+                    const subtaskElement = document.createElement('div');
+                    subtaskElement.classList.add('subtask-item');
+                    subtaskElement.innerHTML = `
+                        <input type="checkbox" class="subtask-checkbox" ${subtask.completed ? 'checked' : ''} data-index="${index}">
+                        <input type="text" class="subtask-text" value="${subtask.text}" data-index="${index}">
+                        <button class="action-btn delete-subtask" data-index="${index}"><i class="fas fa-times"></i></button>
+                    `;
+                    subtasksContainer.appendChild(subtaskElement);
+                });
+            }
+            
+            // Add event listeners for subtask actions
+            subtasksContainer.querySelectorAll('.subtask-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    task.subtasks[index].completed = e.target.checked;
+                    saveData();
+                    
+                    // Check if all subtasks are completed
+                    const allCompleted = task.subtasks.every(st => st.completed);
+                    if (allCompleted && !task.completed) {
+                        // Auto-complete the main task if all subtasks are done
+                        task.completed = true;
+                        appData.stats.completedTasks++;
+                        updateProgress();
+                        updateUI();
+                    }
+                    
+                    renderTasks();
+                });
+            });
+            
+            subtasksContainer.querySelectorAll('.subtask-text').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    task.subtasks[index].text = e.target.value;
+                    saveData();
+                });
+            });
+            
+            subtasksContainer.querySelectorAll('.delete-subtask').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.dataset.index);
+                    task.subtasks.splice(index, 1);
+                    saveData();
+                    openTaskModal(taskId); // Refresh the modal
+                });
+            });
+            
+            // Show the modal
+            modal.style.display = 'flex';
+            
+            // Focus on subtasks if needed
+            if (showSubtasks) {
+                document.getElementById('add-subtask').scrollIntoView();
+            }
+        }
+        
+        function openGoalModal(goalId) {
+            const goal = appData.goals.find(g => g.id === goalId);
+            if (!goal) return;
+            
+            const modal = document.getElementById('goal-modal');
+            const textInput = document.getElementById('edit-goal-text');
+            const progressInput = document.getElementById('edit-goal-progress');
+            const targetInput = document.getElementById('edit-goal-target');
+            const typeSelect = document.getElementById('edit-goal-type');
+            
+            // Fill form with goal data
+            textInput.value = goal.text;
+            progressInput.value = goal.progress;
+            targetInput.value = goal.target;
+            typeSelect.value = goal.type;
+            
+            // Show the modal
+            modal.style.display = 'flex';
+        }
+        
+        function deleteTask(taskId) {
+            if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
+                const taskIndex = appData.tasks.findIndex(t => t.id === taskId);
+                if (taskIndex !== -1) {
+                    const task = appData.tasks[taskIndex];
+                    if (task.completed) {
+                        appData.stats.completedTasks--;
+                    }
+                    appData.stats.totalTasks--;
+                    appData.tasks.splice(taskIndex, 1);
+                    saveData();
+                    renderTasks();
+                    updateProgress();
+                    updateUI();
+                }
+            }
+        }
+        
+        function deleteGoal(goalId) {
+            if (confirm('Вы уверены, что хотите удалить эту цель?')) {
+                const goalIndex = appData.goals.findIndex(g => g.id === goalId);
+                if (goalIndex !== -1) {
+                    appData.goals.splice(goalIndex, 1);
+                    saveData();
+                    renderGoals();
+                    updateGoalsProgress();
+                }
+            }
+        }
+
+        // Setup modals
+        function setupModals() {
+            // Task modal
+            const taskModal = document.getElementById('task-modal');
+            const cancelTaskEdit = document.getElementById('cancel-edit');
+            const saveTask = document.getElementById('save-task');
+            const addSubtaskBtn = document.getElementById('add-subtask');
+            
+            cancelTaskEdit.addEventListener('click', () => {
+                taskModal.style.display = 'none';
+            });
+            
+            taskModal.querySelector('.modal-close').addEventListener('click', () => {
+                taskModal.style.display = 'none';
+            });
+            
+            saveTask.addEventListener('click', () => {
+                const taskId = parseInt(saveTask.dataset.id);
+                const task = appData.tasks.find(t => t.id === taskId);
+                if (task) {
+                    const textInput = document.getElementById('edit-task-text');
+                    const timeInput = document.getElementById('edit-task-time');
+                    const dateInput = document.getElementById('edit-task-date');
+                    const prioritySelect = document.getElementById('edit-task-priority');
+                    
+                    task.text = textInput.value;
+                    task.time = timeInput.value;
+                    task.date = dateInput.value;
+                    task.priority = prioritySelect.value;
+                    
+                    saveData();
+                    renderTasks();
+                    taskModal.style.display = 'none';
+                }
+            });
+            
+            addSubtaskBtn.addEventListener('click', () => {
+                const taskId = parseInt(saveTask.dataset.id);
+                const task = appData.tasks.find(t => t.id === taskId);
+                if (task) {
+                    if (!task.subtasks) {
+                        task.subtasks = [];
+                    }
+                    
+                    task.subtasks.push({
+                        text: 'Новая подзадача',
+                        completed: false
+                    });
+                    
+                    saveData();
+                    openTaskModal(taskId);
+                }
+            });
+            
+            // Goal modal
+            const goalModal = document.getElementById('goal-modal');
+            const cancelGoalEdit = document.getElementById('cancel-goal-edit');
+            const saveGoal = document.getElementById('save-goal');
+            
+            cancelGoalEdit.addEventListener('click', () => {
+                goalModal.style.display = 'none';
+            });
+            
+            goalModal.querySelector('.modal-close').addEventListener('click', () => {
+                goalModal.style.display = 'none';
+            });
+            
+            saveGoal.addEventListener('click', () => {
+                const goalId = parseInt(saveGoal.dataset.id);
+                const goal = appData.goals.find(g => g.id === goalId);
+                if (goal) {
+                    const textInput = document.getElementById('edit-goal-text');
+                    const progressInput = document.getElementById('edit-goal-progress');
+                    const targetInput = document.getElementById('edit-goal-target');
+                    const typeSelect = document.getElementById('edit-goal-type');
+                    
+                    goal.text = textInput.value;
+                    goal.progress = parseInt(progressInput.value);
+                    goal.target = parseInt(targetInput.value);
+                    goal.type = typeSelect.value;
+                    
+                    // Update completion status
+                    goal.completed = goal.progress >= goal.target;
+                    
+                    saveData();
+                    renderGoals();
+                    updateGoalsProgress();
+                    goalModal.style.display = 'none';
+                }
+            });
+            
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal-backdrop').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
         }
 
         // Setup themes
@@ -974,6 +2063,150 @@
             });
         }
 
+        // Update streak
+        function updateStreak() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (appData.stats.lastActiveDate === today) {
+                return; // Already updated today
+            }
+            
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            if (appData.stats.lastActiveDate === yesterdayStr) {
+                // Consecutive day
+                appData.stats.currentStreak++;
+            } else if (appData.stats.lastActiveDate !== today) {
+                // Broken streak
+                appData.stats.currentStreak = 1;
+            }
+            
+            appData.stats.lastActiveDate = today;
+            saveData();
+            
+            // Update achievements based on streak
+            updateAchievementProgress('streak', appData.stats.currentStreak);
+        }
+
+        // Update achievements
+        function updateAchievements() {
+            const achievementsList = document.getElementById('achievements-list');
+            achievementsList.innerHTML = '';
+            
+            appData.achievements.forEach(achievement => {
+                const progressPercentage = Math.round((achievement.progress / achievement.target) * 100);
+                
+                const achievementElement = document.createElement('div');
+                achievementElement.classList.add('achievement');
+                if (achievement.completed) {
+                    achievementElement.classList.add('completed');
+                }
+                
+                achievementElement.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-info">
+                        <div class="achievement-title">${achievement.title}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                        <div class="achievement-progress">
+                            <div class="achievement-progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                    </div>
+                `;
+                
+                achievementsList.appendChild(achievementElement);
+            });
+        }
+        
+        function updateAchievementProgress(achievementType, progress) {
+            let achievementId;
+            
+            switch(achievementType) {
+                case 'streak':
+                    achievementId = 1;
+                    break;
+                case 'weekly_goals':
+                    achievementId = 2;
+                    break;
+                case 'all_daily_tasks':
+                    achievementId = 3;
+                    break;
+                case 'task_with_subtasks':
+                    // This would be a new achievement to add
+                    break;
+                default:
+                    return;
+            }
+            
+            const achievement = appData.achievements.find(a => a.id === achievementId);
+            if (achievement) {
+                achievement.progress = progress;
+                if (achievement.progress >= achievement.target) {
+                    achievement.completed = true;
+                }
+                saveData();
+                updateAchievements();
+            }
+        }
+
+        // Render history table
+        function renderHistoryTable() {
+            const historyTable = document.getElementById('history-table');
+            historyTable.innerHTML = '';
+            
+            // Group tasks by date
+            const tasksByDate = {};
+            appData.tasks.forEach(task => {
+                if (!tasksByDate[task.date]) {
+                    tasksByDate[task.date] = {
+                        total: 0,
+                        completed: 0
+                    };
+                }
+                
+                tasksByDate[task.date].total++;
+                if (task.completed) {
+                    tasksByDate[task.date].completed++;
+                }
+            });
+            
+            // Convert to array and sort by date (newest first)
+            const dates = Object.keys(tasksByDate).sort((a, b) => {
+                return new Date(b) - new Date(a);
+            });
+            
+            if (dates.length === 0) {
+                historyTable.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <p>История активности отсутствует</p>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                dates.forEach(date => {
+                    const data = tasksByDate[date];
+                    const percentage = Math.round((data.completed / data.total) * 100);
+                    const formattedDate = new Date(date).toLocaleDateString('ru-RU');
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>${data.total}</td>
+                        <td>${data.completed}</td>
+                        <td>
+                            <div class="progress-bar" style="width: 100px">
+                                <div class="progress-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </td>
+                    `;
+                    historyTable.appendChild(tr);
+                });
+            }
+        }
+
         // Update UI with current data
         function updateUI() {
             // Update stats
@@ -987,17 +2220,59 @@
             
             document.getElementById('current-streak').textContent = appData.stats.currentStreak;
             
-            // Update achievements progress
-            const achievements = document.querySelectorAll('.achievement');
-            achievements.forEach((achievement, index) => {
-                if (appData.achievements[index]) {
-                    const progress = appData.achievements[index];
-                    const progressPercentage = Math.round((progress.progress / progress.target) * 100);
-                    const progressBar = achievement.querySelector('.achievement-progress-fill');
-                    if (progressBar) {
-                        progressBar.style.width = `${progressPercentage}%`;
-                    }
-                }
+            // Update achievements
+            updateAchievements();
+            
+            // Render week chart
+            renderWeekChart();
+        }
+        
+        function renderWeekChart() {
+            const weekChart = document.getElementById('week-chart');
+            weekChart.innerHTML = '';
+            
+            // Get tasks for the last 7 days
+            const today = new Date();
+            const weekData = [];
+            const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(today.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                const dayTasks = appData.tasks.filter(task => task.date === dateStr);
+                const completedTasks = dayTasks.filter(task => task.completed).length;
+                const percentage = dayTasks.length > 0 ? (completedTasks / dayTasks.length) * 100 : 0;
+                
+                weekData.push({
+                    day: dayNames[date.getDay()],
+                    percentage: percentage
+                });
+            }
+            
+            // Find maximum percentage to scale chart
+            const maxPercentage = Math.max(...weekData.map(d => d.percentage), 10); // At least 10% to avoid division by zero
+            
+            // Render chart bars
+            const barWidth = (100 / weekData.length) - 2;
+            
+            weekData.forEach((data, index) => {
+                const barHeight = (data.percentage / maxPercentage) * 180; // 180px is max height
+                const bar = document.createElement('div');
+                bar.classList.add('chart-bar');
+                bar.style.height = `${barHeight}px`;
+                bar.style.left = `${index * (100 / weekData.length) + 1}%`;
+                bar.style.width = `${barWidth}%`;
+                
+                const label = document.createElement('div');
+                label.classList.add('chart-label');
+                label.textContent = data.day;
+                label.style.left = `${index * (100 / weekData.length) + 1}%`;
+                label.style.width = `${barWidth}%`;
+                
+                weekChart.appendChild(bar);
+                weekChart.appendChild(label);
             });
         }
 
