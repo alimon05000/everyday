@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Прогресс - Ежедневный помощник</title>
+    <title>Progress Pro - Ежедневный помощник</title>
     <meta name="theme-color" content="#6d28d9">
     <meta name="description" content="Ежедневный помощник для отслеживания целей и планирования задач">
     <link rel="manifest" id="manifest">
@@ -13,15 +13,16 @@
             --primary: #6d28d9;
             --primary-light: #8b5cf6;
             --secondary: #ec4899;
-            --background: #faf7fd;
+            --background: #f8fafc;
             --card: #ffffff;
             --text: #1f2937;
             --text-light: #6b7280;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --radius: 12px;
+            --border: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --radius: 10px;
         }
 
         .theme-dark {
@@ -32,7 +33,8 @@
             --card: #1f2937;
             --text: #f9fafb;
             --text-light: #d1d5db;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --border: #374151;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .theme-nature {
@@ -43,6 +45,7 @@
             --card: #ffffff;
             --text: #064e3b;
             --text-light: #4b5563;
+            --border: #bbf7d0;
         }
 
         * {
@@ -57,7 +60,7 @@
             background-color: var(--background);
             color: var(--text);
             line-height: 1.6;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
         }
 
         .container {
@@ -68,7 +71,7 @@
 
         @media (min-width: 768px) {
             .container {
-                max-width: 600px;
+                max-width: 800px;
             }
         }
 
@@ -134,6 +137,40 @@
         .theme-option.dark { background: linear-gradient(135deg, #8b5cf6 0%, #f472b6 100%); }
         .theme-option.nature { background: linear-gradient(135deg, #059669 0%, #65a30d 100%); }
 
+        /* iOS-style tabs */
+        .tabs {
+            display: flex;
+            background-color: var(--card);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .card {
             background-color: var(--card);
             border-radius: var(--radius);
@@ -167,30 +204,43 @@
             transition: width 0.5s ease;
         }
 
-        .task-list {
-            list-style: none;
+        /* Table styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
         }
 
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--background);
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
 
-        .task-item:last-child {
+        .data-table th {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:last-child td {
             border-bottom: none;
+        }
+
+        .checkbox-cell {
+            width: 40px;
         }
 
         .task-checkbox {
             appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border: 2px solid var(--primary-light);
-            border-radius: 50%;
-            margin-right: 12px;
+            border-radius: 4px;
             cursor: pointer;
             position: relative;
+            margin-right: 8px;
         }
 
         .task-checkbox:checked {
@@ -202,7 +252,7 @@
             content: "✓";
             position: absolute;
             color: white;
-            font-size: 14px;
+            font-size: 12px;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -218,7 +268,7 @@
             color: var(--text-light);
         }
 
-        .add-task {
+        .add-form {
             display: flex;
             margin-top: 16px;
         }
@@ -226,7 +276,7 @@
         .task-input {
             flex: 1;
             padding: 12px;
-            border: 1px solid var(--primary-light);
+            border: 1px solid var(--border);
             border-radius: var(--radius) 0 0 var(--radius);
             background-color: var(--background);
             color: var(--text);
@@ -302,6 +352,46 @@
             color: var(--text-light);
         }
 
+        .achievement-progress {
+            height: 6px;
+            background-color: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .achievement-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background-color: var(--background);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
         .install-btn {
             position: fixed;
             bottom: 20px;
@@ -331,12 +421,24 @@
             color: var(--primary);
             margin: 10px 0;
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Прогресс</h1>
+            <h1>Progress Pro</h1>
             <div class="theme-selector">
                 <button class="theme-button">🎨</button>
                 <div class="theme-options">
@@ -347,69 +449,202 @@
             </div>
         </header>
 
-        <div class="card">
-            <div class="card-title">
-                Ежедневный прогресс
-                <span id="daily-percentage">0%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="daily-progress" style="width: 0%"></div>
-            </div>
-            <p class="motivation-text" id="daily-motivation">Начни выполнять задачи для достижения прогресса!</p>
+        <div class="tabs">
+            <div class="tab active" data-tab="today">Сегодня</div>
+            <div class="tab" data-tab="goals">Цели</div>
+            <div class="tab" data-tab="achievements">Достижения</div>
+            <div class="tab" data-tab="stats">Статистика</div>
         </div>
 
-        <div class="card">
-            <div class="card-title">
-                Сегодняшние задачи
-                <div class="date-display" id="today-date"></div>
+        <!-- Today Tab -->
+        <div class="tab-content active" id="today-tab">
+            <div class="card">
+                <div class="card-title">
+                    Ежедневный прогресс
+                    <span id="daily-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="daily-progress" style="width: 0%"></div>
+                </div>
+                <p class="motivation-text" id="daily-motivation">Начни выполнять задачи для достижения прогресса!</p>
             </div>
-            <ul class="task-list" id="daily-tasks">
-                <li class="task-item">
-                    <input type="checkbox" class="task-checkbox">
-                    <span class="task-text">Пример задачи - нажмите для завершения</span>
-                </li>
-            </ul>
-            <div class="add-task">
-                <input type="text" class="task-input" id="daily-input" placeholder="Добавить задачу...">
-                <button class="add-button" id="daily-add">+</button>
+
+            <div class="card">
+                <div class="card-title">
+                    Сегодняшние задачи
+                    <div class="date-display" id="today-date"></div>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-cell"></th>
+                            <th>Задача</th>
+                            <th>Время</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daily-tasks">
+                        <tr>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" class="task-checkbox">
+                            </td>
+                            <td>
+                                <span class="task-text">Пример задачи - нажмите для завершения</span>
+                            </td>
+                            <td>09:00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="add-form">
+                    <input type="text" class="task-input" id="daily-input" placeholder="Добавить задачу...">
+                    <button class="add-button" id="daily-add">+</button>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-title">Цели</div>
+        <!-- Goals Tab -->
+        <div class="tab-content" id="goals-tab">
+            <div class="card">
+                <div class="card-title">Мои цели</div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-cell"></th>
+                            <th>Цель</th>
+                            <th>Прогресс</th>
+                        </tr>
+                    </thead>
+                    <tbody id="goals-list">
+                        <tr>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" class="task-checkbox">
+                            </td>
+                            <td>
+                                <span class="task-text">Прочитать книгу (30 мин в день)</span>
+                            </td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 30%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="checkbox-cell">
+                                <input type="checkbox" class="task-checkbox">
+                            </td>
+                            <td>
+                                <span class="task-text">Пробежать 5 км без остановки</span>
+                            </td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="add-form">
+                    <input type="text" class="task-input" id="goal-input" placeholder="Добавить цель...">
+                    <button class="add-button" id="goal-add">+</button>
+                </div>
+            </div>
+
             <div class="goal-grid">
                 <div class="goal-card">
-                    <div class="goal-title">Недельные</div>
-                    <div class="goal-value" id="weekly-value">2/5</div>
+                    <div class="goal-title">Недельные цели</div>
+                    <div class="goal-value" id="weekly-value">0/0</div>
                 </div>
                 <div class="goal-card">
-                    <div class="goal-title">Месячные</div>
-                    <div class="goal-value" id="monthly-value">7/20</div>
+                    <div class="goal-title">Месячные цели</div>
+                    <div class="goal-value" id="monthly-value">0/0</div>
                 </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-title">Достижения</div>
-            <div class="achievement">
-                <div class="achievement-icon">🔥</div>
-                <div class="achievement-info">
-                    <div class="achievement-title">Серия выполненных задач</div>
-                    <div class="achievement-desc">Выполняйте задачи ежедневно 7 дней подряд</div>
+        <!-- Achievements Tab -->
+        <div class="tab-content" id="achievements-tab">
+            <div class="card">
+                <div class="card-title">Достижения</div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">🔥</div>
+                    <div class="achievement-info">
+                        <div class="achievement-title">Серия выполненных задач</div>
+                        <div class="achievement-desc">Выполняйте задачи ежедневно 7 дней подряд</div>
+                        <div class="achievement-progress">
+                            <div class="achievement-progress-fill" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">⭐</div>
+                    <div class="achievement-info">
+                        <div class="achievement-title">Целеустремленный</div>
+                        <div class="achievement-desc">Достигните 10 недельных целей</div>
+                        <div class="achievement-progress">
+                            <div class="achievement-progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">🚀</div>
+                    <div class="achievement-info">
+                        <div class="achievement-title">Производительность</div>
+                        <div class="achievement-desc">Выполните все задачи дня 5 раз</div>
+                        <div class="achievement-progress">
+                            <div class="achievement-progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement">
+                    <div class="achievement-icon">📚</div>
+                    <div class="achievement-info">
+                        <div class="achievement-title">Книжный червь</div>
+                        <div class="achievement-desc">Прочтите 500 страниц</div>
+                        <div class="achievement-progress">
+                            <div class="achievement-progress-fill" style="width: 15%"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon">⭐</div>
-                <div class="achievement-info">
-                    <div class="achievement-title">Целеустремленный</div>
-                    <div class="achievement-desc">Достигните 10 недельных целей</div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div class="tab-content" id="stats-tab">
+            <div class="card">
+                <div class="card-title">Статистика</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-tasks">0</div>
+                        <div class="stat-label">Всего задач</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completed-tasks">0</div>
+                        <div class="stat-label">Выполнено</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="success-rate">0%</div>
+                        <div class="stat-label">Успешность</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="current-streak">0</div>
+                        <div class="stat-label">Дней подряд</div>
+                    </div>
                 </div>
             </div>
-            <div class="achievement">
-                <div class="achievement-icon">🚀</div>
-                <div class="achievement-info">
-                    <div class="achievement-title">Производительность</div>
-                    <div class="achievement-desc">Выполните все задачи дня 5 раз</div>
+            
+            <div class="card">
+                <div class="card-title">История активности</div>
+                <div class="empty-state">
+                    <div class="empty-state-icon">📊</div>
+                    <p>Здесь будет отображаться ваша активность</p>
                 </div>
             </div>
         </div>
@@ -418,121 +653,304 @@
     <button class="install-btn" id="install-button">+</button>
 
     <script>
-        // Установка текущей даты
+        // Data structure
+        let appData = {
+            tasks: [],
+            goals: [],
+            achievements: [],
+            stats: {
+                totalTasks: 0,
+                completedTasks: 0,
+                currentStreak: 0,
+                lastActiveDate: null
+            },
+            settings: {
+                theme: 'light'
+            }
+        };
+
+        // Initialize the app
+        function initApp() {
+            loadData();
+            setDate();
+            setupTabs();
+            setupTasks();
+            setupGoals();
+            setupThemes();
+            setupPWA();
+            updateUI();
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('progressProData');
+            if (savedData) {
+                appData = JSON.parse(savedData);
+            } else {
+                // Initialize with default data if no saved data exists
+                appData.achievements = [
+                    { id: 1, title: "Серия выполненных задач", description: "Выполняйте задачи ежедневно 7 дней подряд", progress: 0, target: 7, icon: "🔥" },
+                    { id: 2, title: "Целеустремленный", description: "Достигните 10 недельных целей", progress: 0, target: 10, icon: "⭐" },
+                    { id: 3, title: "Производительность", description: "Выполните все задачи дня 5 раз", progress: 0, target: 5, icon: "🚀" },
+                    { id: 4, title: "Книжный червь", description: "Прочтите 500 страниц", progress: 75, target: 500, icon: "📚" }
+                ];
+                
+                // Add example task if no tasks exist
+                if (appData.tasks.length === 0) {
+                    appData.tasks.push({
+                        id: Date.now(),
+                        text: "Пример задачи - нажмите для завершения",
+                        completed: false,
+                        date: new Date().toISOString().split('T')[0],
+                        time: "09:00"
+                    });
+                }
+                
+                saveData();
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('progressProData', JSON.stringify(appData));
+        }
+
+        // Set current date
         function setDate() {
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             const today = new Date();
             document.getElementById('today-date').textContent = today.toLocaleDateString('ru-RU', options);
         }
 
-        // Управление задачами
+        // Setup iOS-style tabs
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+        }
+
+        // Setup tasks functionality
         function setupTasks() {
             const taskList = document.getElementById('daily-tasks');
             const taskInput = document.getElementById('daily-input');
             const addButton = document.getElementById('daily-add');
             
-            // Загрузка задач из localStorage
-            loadTasks();
+            // Load tasks
+            renderTasks();
             updateProgress();
             
-            // Добавление новой задачи
+            // Add new task
             addButton.addEventListener('click', addTask);
             taskInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') addTask();
             });
             
-            // Отметка выполнения задач
+            // Mark task as completed
             taskList.addEventListener('change', (e) => {
                 if (e.target.classList.contains('task-checkbox')) {
-                    updateProgress();
-                    saveTasks();
+                    const taskId = parseInt(e.target.closest('tr').dataset.id);
+                    const task = appData.tasks.find(t => t.id === taskId);
+                    if (task) {
+                        task.completed = e.target.checked;
+                        if (task.completed) {
+                            appData.stats.completedTasks++;
+                        } else {
+                            appData.stats.completedTasks--;
+                        }
+                        saveData();
+                        updateProgress();
+                        updateUI();
+                    }
                 }
             });
             
             function addTask() {
                 const taskText = taskInput.value.trim();
                 if (taskText) {
-                    const li = document.createElement('li');
-                    li.className = 'task-item';
-                    li.innerHTML = `
-                        <input type="checkbox" class="task-checkbox">
-                        <span class="task-text">${taskText}</span>
-                    `;
-                    taskList.appendChild(li);
-                    taskInput.value = '';
+                    const now = new Date();
+                    const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                    const date = now.toISOString().split('T')[0];
+                    
+                    const newTask = {
+                        id: Date.now(),
+                        text: taskText,
+                        completed: false,
+                        date: date,
+                        time: time
+                    };
+                    
+                    appData.tasks.push(newTask);
+                    appData.stats.totalTasks++;
+                    saveData();
+                    renderTasks();
                     updateProgress();
-                    saveTasks();
+                    updateUI();
+                    
+                    taskInput.value = '';
                 }
             }
             
-            function saveTasks() {
-                const tasks = [];
-                document.querySelectorAll('.task-item').forEach(item => {
-                    tasks.push({
-                        text: item.querySelector('.task-text').textContent,
-                        completed: item.querySelector('.task-checkbox').checked
-                    });
-                });
-                localStorage.setItem('dailyTasks', JSON.stringify(tasks));
-            }
-            
-            function loadTasks() {
-                const tasks = JSON.parse(localStorage.getItem('dailyTasks') || '[]');
+            function renderTasks() {
+                const today = new Date().toISOString().split('T')[0];
+                const todayTasks = appData.tasks.filter(task => task.date === today);
+                
                 taskList.innerHTML = '';
                 
-                if (tasks.length === 0) {
-                    // Добавляем пример задачи если список пуст
-                    const li = document.createElement('li');
-                    li.className = 'task-item';
-                    li.innerHTML = `
-                        <input type="checkbox" class="task-checkbox">
-                        <span class="task-text">Пример задачи - нажмите для завершения</span>
+                if (todayTasks.length === 0) {
+                    taskList.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                <div class="empty-state-icon">📝</div>
+                                <p>Задачи на сегодня отсутствуют</p>
+                            </td>
+                        </tr>
                     `;
-                    taskList.appendChild(li);
                 } else {
-                    tasks.forEach(task => {
-                        const li = document.createElement('li');
-                        li.className = 'task-item';
-                        li.innerHTML = `
-                            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
-                            <span class="task-text">${task.text}</span>
+                    todayTasks.forEach(task => {
+                        const tr = document.createElement('tr');
+                        tr.dataset.id = task.id;
+                        tr.innerHTML = `
+                            <td class="checkbox-cell">
+                                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                            </td>
+                            <td>
+                                <span class="task-text">${task.text}</span>
+                            </td>
+                            <td>${task.time}</td>
                         `;
-                        taskList.appendChild(li);
+                        taskList.appendChild(tr);
                     });
                 }
             }
             
             function updateProgress() {
-                const totalTasks = document.querySelectorAll('.task-item').length;
-                const completedTasks = document.querySelectorAll('.task-checkbox:checked').length;
+                const today = new Date().toISOString().split('T')[0];
+                const todayTasks = appData.tasks.filter(task => task.date === today);
+                const totalTasks = todayTasks.length;
+                const completedTasks = todayTasks.filter(task => task.completed).length;
                 const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
                 
                 document.getElementById('daily-progress').style.width = `${percentage}%`;
                 document.getElementById('daily-percentage').textContent = `${percentage}%`;
                 
-                // Обновление мотивационного текста
+                // Update motivation text
                 const motivationText = document.getElementById('daily-motivation');
-                if (percentage === 0) {
+                if (percentage === 0 && totalTasks > 0) {
                     motivationText.textContent = "Начни выполнять задачи для достижения прогресса!";
                 } else if (percentage < 50) {
                     motivationText.textContent = "Так держать! Продолжай в том же духе!";
                 } else if (percentage < 100) {
                     motivationText.textContent = "Отличная работа! Ты уже на полпути!";
-                } else {
+                } else if (percentage === 100 && totalTasks > 0) {
                     motivationText.textContent = "Потрясающе! Все задачи выполнены!";
+                } else {
+                    motivationText.textContent = "Добавь задачи на сегодня для начала работы!";
                 }
             }
         }
 
-        // Управление темами
+        // Setup goals functionality
+        function setupGoals() {
+            const goalInput = document.getElementById('goal-input');
+            const addButton = document.getElementById('goal-add');
+            
+            // Load goals
+            renderGoals();
+            updateGoalsProgress();
+            
+            // Add new goal
+            addButton.addEventListener('click', addGoal);
+            goalInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addGoal();
+            });
+            
+            function addGoal() {
+                const goalText = goalInput.value.trim();
+                if (goalText) {
+                    const newGoal = {
+                        id: Date.now(),
+                        text: goalText,
+                        completed: false,
+                        progress: 0,
+                        target: 100,
+                        type: 'weekly'
+                    };
+                    
+                    appData.goals.push(newGoal);
+                    saveData();
+                    renderGoals();
+                    updateGoalsProgress();
+                    
+                    goalInput.value = '';
+                }
+            }
+            
+            function renderGoals() {
+                const goalsList = document.getElementById('goals-list');
+                goalsList.innerHTML = '';
+                
+                if (appData.goals.length === 0) {
+                    goalsList.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                <div class="empty-state-icon">🎯</div>
+                                <p>У вас пока нет целей</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    appData.goals.forEach(goal => {
+                        const progressPercentage = Math.round((goal.progress / goal.target) * 100);
+                        const tr = document.createElement('tr');
+                        tr.dataset.id = goal.id;
+                        tr.innerHTML = `
+                            <td class="checkbox-cell">
+                                <input type="checkbox" class="task-checkbox" ${goal.completed ? 'checked' : ''}>
+                            </td>
+                            <td>
+                                <span class="task-text">${goal.text}</span>
+                            </td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                                </div>
+                            </td>
+                        `;
+                        goalsList.appendChild(tr);
+                    });
+                }
+            }
+            
+            function updateGoalsProgress() {
+                const weeklyGoals = appData.goals.filter(goal => goal.type === 'weekly');
+                const monthlyGoals = appData.goals.filter(goal => goal.type === 'monthly');
+                
+                const completedWeekly = weeklyGoals.filter(goal => goal.completed).length;
+                const completedMonthly = monthlyGoals.filter(goal => goal.completed).length;
+                
+                document.getElementById('weekly-value').textContent = `${completedWeekly}/${weeklyGoals.length}`;
+                document.getElementById('monthly-value').textContent = `${completedMonthly}/${monthlyGoals.length}`;
+            }
+        }
+
+        // Setup themes
         function setupThemes() {
             const themeButton = document.querySelector('.theme-button');
             const themeOptions = document.querySelector('.theme-options');
             const themeOptionsList = document.querySelectorAll('.theme-option');
             
-            // Загрузка темы из localStorage
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.className = `theme-${savedTheme}`;
+            // Load saved theme
+            document.body.className = `theme-${appData.settings.theme}`;
             
             themeButton.addEventListener('click', () => {
                 themeOptions.classList.toggle('show');
@@ -542,12 +960,13 @@
                 option.addEventListener('click', () => {
                     const theme = option.getAttribute('data-theme');
                     document.body.className = `theme-${theme}`;
-                    localStorage.setItem('theme', theme);
+                    appData.settings.theme = theme;
+                    saveData();
                     themeOptions.classList.remove('show');
                 });
             });
             
-            // Закрытие меню тем при клике вне его
+            // Close theme menu when clicking outside
             document.addEventListener('click', (e) => {
                 if (!themeButton.contains(e.target) && !themeOptions.contains(e.target)) {
                     themeOptions.classList.remove('show');
@@ -555,7 +974,34 @@
             });
         }
 
-        // PWA функциональность
+        // Update UI with current data
+        function updateUI() {
+            // Update stats
+            document.getElementById('total-tasks').textContent = appData.stats.totalTasks;
+            document.getElementById('completed-tasks').textContent = appData.stats.completedTasks;
+            
+            const successRate = appData.stats.totalTasks > 0 
+                ? Math.round((appData.stats.completedTasks / appData.stats.totalTasks) * 100) 
+                : 0;
+            document.getElementById('success-rate').textContent = `${successRate}%`;
+            
+            document.getElementById('current-streak').textContent = appData.stats.currentStreak;
+            
+            // Update achievements progress
+            const achievements = document.querySelectorAll('.achievement');
+            achievements.forEach((achievement, index) => {
+                if (appData.achievements[index]) {
+                    const progress = appData.achievements[index];
+                    const progressPercentage = Math.round((progress.progress / progress.target) * 100);
+                    const progressBar = achievement.querySelector('.achievement-progress-fill');
+                    if (progressBar) {
+                        progressBar.style.width = `${progressPercentage}%`;
+                    }
+                }
+            });
+        }
+
+        // PWA functionality
         function setupPWA() {
             const installButton = document.getElementById('install-button');
             let deferredPrompt;
@@ -577,14 +1023,14 @@
                 }
             });
             
-            // Генерация manifest
+            // Generate manifest
             const manifest = {
-                "name": "Прогресс - Ежедневный помощник",
-                "short_name": "Прогресс",
+                "name": "Progress Pro - Ежедневный помощник",
+                "short_name": "Progress Pro",
                 "description": "Ежедневный помощник для отслеживания целей и планирования задач",
                 "start_url": "/",
                 "display": "standalone",
-                "background_color": "#faf7fd",
+                "background_color": "#f8fafc",
                 "theme_color": "#6d28d9",
                 "icons": [
                     {
@@ -599,7 +1045,7 @@
             const manifestURL = URL.createObjectURL(manifestBlob);
             document.getElementById('manifest').href = manifestURL;
             
-            // Регистрация Service Worker
+            // Register Service Worker
             if ('serviceWorker' in navigator) {
                 const swCode = `
                     self.addEventListener('install', (event) => {
@@ -607,7 +1053,7 @@
                     });
                     
                     self.addEventListener('fetch', (event) => {
-                        // Можно добавить кэширование для офлайн-работы
+                        // Can add caching for offline work
                     });
                 `;
                 
@@ -624,17 +1070,8 @@
             }
         }
 
-        // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', () => {
-            setDate();
-            setupTasks();
-            setupThemes();
-            setupPWA();
-            
-            // Обновляем значения целей (в реальном приложении эти данные брались бы из хранилища)
-            document.getElementById('weekly-value').textContent = "2/5";
-            document.getElementById('monthly-value').textContent = "7/20";
-        });
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
