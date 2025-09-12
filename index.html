@@ -3,2350 +3,658 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Progress Pro - Ежедневный помощник</title>
+    <title>HabitFlow - Трекер Привычек</title>
     <meta name="theme-color" content="#6d28d9">
-    <meta name="description" content="Ежедневный помощник для отслеживания целей и планирования задач">
-    <link rel="manifest" id="manifest">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDAiIGZpbGw9IiM2RDI4RDkiLz4KPHBhdGggZD0iTTk2IDU2VjEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTU2IDk2SDEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
+    <meta name="description" content="Продвинутый трекер привычек и ежедневник">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #6d28d9;
             --primary-light: #8b5cf6;
-            --secondary: #ec4899;
-            --background: #f8fafc;
-            --card: #ffffff;
-            --text: #1f2937;
-            --text-light: #6b7280;
+            --secondary: #10b981;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #9ca3af;
+            --danger: #ef4444;
             --success: #10b981;
             --warning: #f59e0b;
-            --danger: #ef4444;
-            --border: #e5e7eb;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --radius: 10px;
-            --ios-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-            --ios-highlight: #007AFF;
-            --ios-gray: #8E8E93;
-            --ios-light-gray: #F2F2F7;
-        }
-
-        .theme-dark {
-            --primary: #8b5cf6;
-            --primary-light: #a78bfa;
-            --secondary: #f472b6;
-            --background: #111827;
-            --card: #1f2937;
-            --text: #f9fafb;
-            --text-light: #d1d5db;
-            --border: #374151;
-            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            --ios-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
-            --ios-highlight: #0A84FF;
-            --ios-gray: #8E8E93;
-            --ios-light-gray: #1C1C1E;
-        }
-
-        .theme-nature {
-            --primary: #059669;
-            --primary-light: #10b981;
-            --secondary: #65a30d;
-            --background: #f0fdf4;
-            --card: #ffffff;
-            --text: #064e3b;
-            --text-light: #4b5563;
-            --border: #bbf7d0;
-            --ios-highlight: #059669;
-            --ios-gray: #059669;
-            --ios-light-gray: #F0FDF4;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-            padding-bottom: 100px;
-            -webkit-font-smoothing: antialiased;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
         }
 
-        .container {
-            max-width: 100%;
-            padding: 16px;
+        .app-container {
+            max-width: 1200px;
             margin: 0 auto;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                max-width: 800px;
-            }
+            padding: 1rem;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
-            background-color: var(--card);
-            box-shadow: var(--shadow);
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            position: sticky;
-            top: 10px;
-            z-index: 10;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .theme-selector {
-            position: relative;
-        }
-
-        .theme-button {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--primary);
-        }
-
-        .theme-options {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: var(--card);
+            padding: 1rem;
+            background: white;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: 10px;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 11;
+            margin-bottom: 1.5rem;
         }
 
-        .theme-options.show {
+        .logo {
             display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
         }
 
-        .theme-option {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid var(--card);
-        }
-
-        .theme-option.light { background: linear-gradient(135deg, #6d28d9 0%, #ec4899 100%); }
-        .theme-option.dark { background: linear-gradient(135deg, #8b5cf6 0%, #f472b6 100%); }
-        .theme-option.nature { background: linear-gradient(135deg, #059669 0%, #65a30d 100%); }
-
-        /* iOS-style tabs */
-        .tabs-container {
-            position: sticky;
-            top: 82px;
-            z-index: 9;
-            background-color: var(--background);
-            padding: 10px 0;
-            margin-bottom: 10px;
-            overflow-x: auto;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .tabs-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .tabs {
-            display: inline-flex;
-            background-color: var(--ios-light-gray);
-            border-radius: 50px;
-            padding: 4px;
-            box-shadow: var(--ios-card-shadow);
-            min-width: 100%;
+        .nav-tabs {
+            display: flex;
+            background: #f3f4f6;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
         }
 
         .tab {
-            padding: 10px 20px;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
             cursor: pointer;
-            font-weight: 500;
-            color: var(--ios-gray);
-            border-radius: 50px;
-            transition: all 0.3s;
+            transition: var(--transition);
             text-align: center;
-            flex-shrink: 0;
+            flex: 1;
         }
 
         .tab.active {
-            color: white;
-            background-color: var(--ios-highlight);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+            background: white;
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            color: var(--primary);
         }
 
         .card {
-            background-color: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--ios-card-shadow);
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
         .card-title {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--primary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            color: var(--dark);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+
+        .habits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .habit-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .habit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .habit-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .habit-desc {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .habit-progress {
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
         }
 
         .progress-bar {
-            height: 8px;
-            background-color: var(--background);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: var(--primary);
             border-radius: 4px;
-            transition: width 0.5s ease;
         }
 
-        /* iOS-style table */
-        .ios-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 16px 0;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--ios-card-shadow);
-        }
-
-        .ios-table th,
-        .ios-table td {
-            padding: 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .ios-table th {
-            font-weight: 600;
-            color: var(--text-light);
-            font-size: 0.9rem;
-            background-color: var(--ios-light-gray);
-        }
-
-        .ios-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .ios-table tr {
-            background-color: var(--card);
-            transition: background-color 0.2s;
-        }
-
-        .ios-table tr:active {
-            background-color: var(--border);
-        }
-
-        .checkbox-cell {
-            width: 40px;
-        }
-
-        .task-checkbox {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 22px;
-            height: 22px;
-            border: 2px solid var(--primary-light);
-            border-radius: 50%;
-            cursor: pointer;
-            position: relative;
-            margin-right: 8px;
-            transition: all 0.2s;
-        }
-
-        .task-checkbox:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .task-checkbox:checked::after {
-            content: "✓";
-            position: absolute;
-            color: white;
-            font-size: 12px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .task-text {
-            flex: 1;
-            font-size: 1rem;
-        }
-
-        .task-checkbox:checked + .task-text {
-            text-decoration: line-through;
-            color: var(--text-light);
-        }
-
-        .add-form {
+        .habit-actions {
             display: flex;
-            margin-top: 16px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: var(--ios-card-shadow);
+            justify-content: space-between;
         }
 
-        .task-input {
-            flex: 1;
-            padding: 16px;
-            border: none;
-            background-color: var(--card);
-            color: var(--text);
-            font-size: 1rem;
-        }
-
-        .add-button {
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        .goal-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .goal-card {
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
-            color: white;
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            box-shadow: var(--ios-card-shadow);
-        }
-
-        .goal-title {
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
-
-        .goal-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .achievement {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 16px;
-            background-color: var(--card);
-            border-radius: 16px;
-            box-shadow: var(--ios-card-shadow);
-        }
-
-        .achievement-icon {
-            width: 50px;
-            height: 50px;
+        .btn-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 16px;
+            background: #f3f4f6;
+            color: var(--dark);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
             color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
         }
 
-        .achievement-info {
-            flex: 1;
-        }
-
-        .achievement-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .achievement-desc {
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .achievement-progress {
-            height: 6px;
-            background-color: var(--border);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-
-        .achievement-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-
-        .stats-grid {
+        .stats-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .stat-card {
-            background-color: var(--card);
-            border-radius: 16px;
-            padding: 16px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
             text-align: center;
-            box-shadow: var(--ios-card-shadow);
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 4px;
+            margin: 0.5rem 0;
         }
 
         .stat-label {
+            color: var(--gray);
             font-size: 0.9rem;
-            color: var(--text-light);
         }
 
-        .install-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
-            box-shadow: var(--ios-card-shadow);
-            cursor: pointer;
-            z-index: 100;
-            display: none;
-        }
-
-        .date-display {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-top: 4px;
-        }
-
-        .motivation-text {
-            text-align: center;
-            font-style: italic;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-light);
-        }
-
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        /* iOS-style context menu */
-        .context-menu {
-            position: fixed;
-            background: var(--card);
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            overflow: hidden;
-            display: none;
-        }
-
-        .context-menu-item {
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .context-menu-item:active {
-            background-color: var(--border);
-        }
-
-        .context-menu-item i {
-            width: 20px;
-            text-align: center;
-            color: var(--primary);
-        }
-
-        /* Action buttons */
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--ios-gray);
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 5px;
-        }
-
-        .action-btn:hover {
-            color: var(--primary);
-        }
-
-        /* Calendar styles */
-        .calendar-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .calendar-title {
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .calendar-grid {
+        .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            text-align: center;
+            gap: 0.5rem;
         }
 
         .calendar-day {
-            padding: 8px;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 50%;
+            background: #f3f4f6;
             cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .calendar-day:hover {
-            background-color: var(--border);
+            transition: var(--transition);
         }
 
         .calendar-day.active {
-            background-color: var(--primary);
+            background: var(--primary);
             color: white;
         }
 
-        .calendar-day.other-month {
-            color: var(--text-light);
-        }
-
-        .calendar-day.has-tasks::after {
-            content: "";
-            display: block;
-            width: 4px;
-            height: 4px;
-            background-color: var(--primary);
-            border-radius: 50%;
-            margin: 4px auto 0;
-        }
-
-        /* Chart styles */
-        .chart-container {
-            height: 200px;
-            margin: 16px 0;
-            position: relative;
-        }
-
-        .chart-bar {
-            position: absolute;
-            bottom: 0;
-            width: 10px;
-            background: linear-gradient(to top, var(--primary), var(--secondary));
-            border-radius: 3px 3px 0 0;
-            transition: height 0.5s ease;
-        }
-
-        .chart-label {
-            position: absolute;
-            bottom: -25px;
-            font-size: 0.8rem;
-            text-align: center;
-            width: 10px;
-        }
-
-        /* Subtask styles */
-        .subtask-list {
-            margin-left: 20px;
-            margin-top: 8px;
-            border-left: 2px solid var(--border);
-            padding-left: 15px;
-        }
-
-        .subtask-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .subtask-checkbox {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--primary-light);
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-            margin-right: 8px;
-        }
-
-        .subtask-checkbox:checked {
-            background-color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .subtask-checkbox:checked::after {
-            content: "✓";
-            position: absolute;
+        .calendar-day.completed {
+            background: var(--success);
             color: white;
-            font-size: 10px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .subtask-text {
-            font-size: 0.9rem;
-        }
-
-        .subtask-checkbox:checked + .subtask-text {
-            text-decoration: line-through;
-            color: var(--text-light);
-        }
-
-        /* Sortable styles */
-        .sortable-ghost {
-            opacity: 0.5;
-        }
-
-        .sortable-chosen {
-            background-color: var(--border);
-        }
-
-        /* Modal styles */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
         }
 
         .modal {
-            background-color: var(--card);
-            border-radius: 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
             width: 90%;
             max-width: 500px;
-            max-height: 90vh;
-            overflow: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: var(--transition);
         }
 
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+        .modal.active .modal-content {
+            transform: translateY(0);
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 1.5rem;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
 
-        .form-input, .form-select, .form-textarea {
+        .form-input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background-color: var(--background);
-            color: var(--text);
-            font-family: inherit;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius);
+            font-size: 1rem;
         }
 
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
 
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            border: none;
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--gray);
+            font-size: 0.9rem;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
+        @media (max-width: 768px) {
+            .habits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1 0 45%;
+                margin-bottom: 0.5rem;
+            }
         }
 
-        .btn-secondary {
-            background-color: var(--background);
-            color: var(--text);
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* iOS Switch */
-        .ios-switch {
-            position: relative;
-            display: inline-block;
-            width: 51px;
-            height: 31px;
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        .ios-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .ios-switch-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--border);
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .ios-switch-slider:before {
-            position: absolute;
-            content: "";
-            height: 27px;
-            width: 27px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .4s;
+        /* PWA элементы */
+        .install-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 100;
+            transition: var(--transition);
         }
 
-        input:checked + .ios-switch-slider {
-            background-color: var(--primary);
-        }
-
-        input:checked + .ios-switch-slider:before {
-            transform: translateX(20px);
-        }
-
-        /* Drag handle */
-        .drag-handle {
-            cursor: move;
-            color: var(--text-light);
-            padding: 5px;
+        .install-btn:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="app-container">
         <header>
-            <h1>Progress Pro</h1>
-            <div class="theme-selector">
-                <button class="theme-button">🎨</button>
-                <div class="theme-options">
-                    <div class="theme-option light" data-theme="light"></div>
-                    <div class="theme-option dark" data-theme="dark"></div>
-                    <div class="theme-option nature" data-theme="nature"></div>
-                </div>
+            <div class="logo">
+                <i class="fas fa-seedling"></i>
+                <span>HabitFlow</span>
+            </div>
+            <div class="user">
+                <button class="btn btn-primary" id="syncBtn">
+                    <i class="fas fa-sync-alt"></i> Синхронизация
+                </button>
             </div>
         </header>
 
-        <div class="tabs-container">
-            <div class="tabs">
-                <div class="tab active" data-tab="today">Сегодня</div>
-                <div class="tab" data-tab="goals">Цели</div>
-                <div class="tab" data-tab="calendar">Календарь</div>
-                <div class="tab" data-tab="achievements">Достижения</div>
-                <div class="tab" data-tab="stats">Статистика</div>
-                <div class="tab" data-tab="history">История</div>
-            </div>
+        <div class="nav-tabs">
+            <div class="tab active" data-tab="habits">Привычки</div>
+            <div class="tab" data-tab="today">Сегодня</div>
+            <div class="tab" data-tab="stats">Статистика</div>
+            <div class="tab" data-tab="goals">Цели</div>
         </div>
 
-        <!-- Today Tab -->
-        <div class="tab-content active" id="today-tab">
-            <div class="card">
-                <div class="card-title">
-                    Ежедневный прогресс
-                    <span id="daily-percentage">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="daily-progress" style="width: 0%"></div>
-                </div>
-                <p class="motivation-text" id="daily-motivation">Начни выполнять задачи для достижения прогресса!</p>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    Сегодняшние задачи
-                    <div class="date-display" id="today-date"></div>
-                </div>
-                
-                <div class="action-buttons">
-                    <button class="action-btn" id="sort-time"><i class="fas fa-clock"></i></button>
-                    <button class="action-btn" id="sort-priority"><i class="fas fa-exclamation-circle"></i></button>
-                </div>
-                
-                <table class="ios-table">
-                    <thead>
-                        <tr>
-                            <th class="checkbox-cell"></th>
-                            <th>Задача</th>
-                            <th>Время</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody id="daily-tasks">
-                        <!-- Tasks will be populated here -->
-                    </tbody>
-                </table>
-                
-                <div class="add-form">
-                    <input type="text" class="task-input" id="daily-input" placeholder="Добавить задачу...">
-                    <button class="add-button" id="daily-add">+</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Goals Tab -->
-        <div class="tab-content" id="goals-tab">
-            <div class="card">
-                <div class="card-title">Мои цели</div>
-                
-                <table class="ios-table">
-                    <thead>
-                        <tr>
-                            <th class="checkbox-cell"></th>
-                            <th>Цель</th>
-                            <th>Прогресс</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody id="goals-list">
-                        <!-- Goals will be populated here -->
-                    </tbody>
-                </table>
-                
-                <div class="add-form">
-                    <input type="text" class="task-input" id="goal-input" placeholder="Добавить цель...">
-                    <button class="add-button" id="goal-add">+</button>
-                </div>
-            </div>
-
-            <div class="goal-grid">
-                <div class="goal-card">
-                    <div class="goal-title">Недельные цели</div>
-                    <div class="goal-value" id="weekly-value">0/0</div>
-                </div>
-                <div class="goal-card">
-                    <div class="goal-title">Месячные цели</div>
-                    <div class="goal-value" id="monthly-value">0/0</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Calendar Tab -->
-        <div class="tab-content" id="calendar-tab">
-            <div class="card">
-                <div class="card-title">Календарь</div>
-                
-                <div class="calendar-nav">
-                    <button class="action-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
-                    <div class="calendar-title" id="calendar-month">Май 2023</div>
-                    <button class="action-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
-                </div>
-                
-                <div class="calendar-grid" id="calendar-days">
-                    <!-- Calendar days will be populated here -->
+        <div class="tab-content">
+            <!-- Вкладка Привычки -->
+            <div class="tab-pane active" id="habits-pane">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Мои привычки</div>
+                        <button class="btn btn-primary" id="addHabitBtn">
+                            <i class="fas fa-plus"></i> Новая привычка
+                        </button>
+                    </div>
+                    
+                    <div class="habits-grid">
+                        <div class="habit-card fade-in">
+                            <div class="habit-title">Утренняя зарядка</div>
+                            <div class="habit-desc">15 минут упражнений после пробуждения</div>
+                            <div class="habit-progress">
+                                <div class="progress-bar" style="width: 75%"></div>
+                            </div>
+                            <div class="habit-stats">
+                                <span>15/21 дней</span>
+                                <span>71%</span>
+                            </div>
+                            <div class="habit-actions">
+                                <div class="btn-icon" title="Отметить выполнение">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="btn-icon" title="Редактировать">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <div class="btn-icon" title="Удалить">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="habit-card fade-in">
+                            <div class="habit-title">Чтение книги</div>
+                            <div class="habit-desc">30 минут чтения перед сном</div>
+                            <div class="habit-progress">
+                                <div class="progress-bar" style="width: 90%"></div>
+                            </div>
+                            <div class="habit-stats">
+                                <span>19/21 дней</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="habit-actions">
+                                <div class="btn-icon" title="Отметить выполнение">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="btn-icon" title="Редактировать">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <div class="btn-icon" title="Удалить">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="habit-card fade-in">
+                            <div class="habit-title">Прогулка на свежем воздухе</div>
+                            <div class="habit-desc">Минимум 5000 шагов в день</div>
+                            <div class="habit-progress">
+                                <div class="progress-bar" style="width: 60%"></div>
+                            </div>
+                            <div class="habit-stats">
+                                <span>12/21 дней</span>
+                                <span>60%</span>
+                            </div>
+                            <div class="habit-actions">
+                                <div class="btn-icon" title="Отметить выполнение">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="btn-icon" title="Редактировать">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <div class="btn-icon" title="Удалить">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-title">Задачи на <span id="selected-date"></span></div>
-                <div id="date-tasks">
-                    <!-- Tasks for selected date will be populated here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Achievements Tab -->
-        <div class="tab-content" id="achievements-tab">
-            <div class="card">
-                <div class="card-title">Достижения</div>
-                <div id="achievements-list">
-                    <!-- Achievements will be populated here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Tab -->
-        <div class="tab-content" id="stats-tab">
-            <div class="card">
-                <div class="card-title">Статистика</div>
-                
-                <div class="stats-grid">
+            <!-- Вкладка Статистика -->
+            <div class="tab-pane" id="stats-pane" style="display: none;">
+                <div class="stats-container">
                     <div class="stat-card">
-                        <div class="stat-value" id="total-tasks">0</div>
-                        <div class="stat-label">Всего задач</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="completed-tasks">0</div>
-                        <div class="stat-label">Выполнено</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="success-rate">0%</div>
-                        <div class="stat-label">Успешность</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="current-streak">0</div>
+                        <i class="fas fa-fire fa-2x" style="color: var(--primary);"></i>
+                        <div class="stat-value">14</div>
                         <div class="stat-label">Дней подряд</div>
                     </div>
+                    
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle fa-2x" style="color: var(--success);"></i>
+                        <div class="stat-value">78%</div>
+                        <div class="stat-label">Выполненных привычек</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <i class="fas fa-trophy fa-2x" style="color: var(--warning);"></i>
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Завершенных целей</div>
+                    </div>
                 </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Прогресс за месяц</div>
+                    </div>
+                    <div class="calendar">
+                        <!-- Здесь будет календарь с отметками -->
+                        <div class="calendar-day completed">1</div>
+                        <div class="calendar-day completed">2</div>
+                        <div class="calendar-day completed">3</div>
+                        <div class="calendar-day completed">4</div>
+                        <div class="calendar-day completed">5</div>
+                        <div class="calendar-day">6</div>
+                        <div class="calendar-day">7</div>
+                        <!-- И так далее -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            HabitFlow &copy; 2023 - Трекер привычек и ежедневник
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления привычки -->
+    <div class="modal" id="addHabitModal">
+        <div class="modal-content">
+            <div class="card-header">
+                <div class="card-title">Добавить новую привычку</div>
+                <button class="btn-icon" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
-            <div class="card">
-                <div class="card-title">Продуктивность по дням недели</div>
-                <div class="chart-container" id="week-chart">
-                    <!-- Chart will be rendered here -->
+            <form id="habitForm">
+                <div class="form-group">
+                    <label class="form-label" for="habitName">Название привычки</label>
+                    <input type="text" class="form-input" id="habitName" placeholder="Например, Утренняя зарядка" required>
                 </div>
-            </div>
-        </div>
-
-        <!-- History Tab -->
-        <div class="tab-content" id="history-tab">
-            <div class="card">
-                <div class="card-title">История активности</div>
-                <table class="ios-table">
-                    <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th>Задач</th>
-                            <th>Выполнено</th>
-                            <th>Прогресс</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-table">
-                        <!-- History will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Context Menu -->
-    <div class="context-menu" id="context-menu">
-        <div class="context-menu-item" data-action="edit">
-            <i class="fas fa-edit"></i>
-            <span>Редактировать</span>
-        </div>
-        <div class="context-menu-item" data-action="delete">
-            <i class="fas fa-trash"></i>
-            <span>Удалить</span>
-        </div>
-        <div class="context-menu-item" data-action="subtasks">
-            <i class="fas fa-tasks"></i>
-            <span>Подзадачи</span>
+                
+                <div class="form-group">
+                    <label class="form-label" for="habitDesc">Описание</label>
+                    <input type="text" class="form-input" id="habitDesc" placeholder="Краткое описание привычки">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="habitGoal">Цель (дней)</label>
+                    <input type="number" class="form-input" id="habitGoal" value="21" min="1" max="365">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="habitTime">Время напоминания</label>
+                    <input type="time" class="form-input" id="habitTime">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-plus"></i> Добавить привычку
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Task Modal -->
-    <div class="modal-backdrop" id="task-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Редактирование задачи</div>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Название задачи</label>
-                    <input type="text" class="form-input" id="edit-task-text">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Время</label>
-                    <input type="time" class="form-input" id="edit-task-time">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Дата</label>
-                    <input type="date" class="form-input" id="edit-task-date">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Приоритет</label>
-                    <select class="form-select" id="edit-task-priority">
-                        <option value="low">Низкий</option>
-                        <option value="medium">Средний</option>
-                        <option value="high">Высокий</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Подзадачи</label>
-                    <div id="subtasks-container">
-                        <!-- Subtasks will be populated here -->
-                    </div>
-                    <button class="btn btn-secondary" id="add-subtask">Добавить подзадачу</button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancel-edit">Отмена</button>
-                <button class="btn btn-primary" id="save-task">Сохранить</button>
-            </div>
-        </div>
+    <!-- Кнопка установки PWA -->
+    <div class="install-btn" id="installBtn" style="display: none;">
+        <i class="fas fa-download"></i>
     </div>
 
-    <!-- Goal Modal -->
-    <div class="modal-backdrop" id="goal-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Редактирование цели</div>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Название цели</label>
-                    <input type="text" class="form-input" id="edit-goal-text">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Текущий прогресс</label>
-                    <input type="number" class="form-input" id="edit-goal-progress" min="0">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Целевое значение</label>
-                    <input type="number" class="form-input" id="edit-goal-target" min="1">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Тип цели</label>
-                    <select class="form-select" id="edit-goal-type">
-                        <option value="weekly">Недельная</option>
-                        <option value="monthly">Месячная</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancel-goal-edit">Отмена</button>
-                <button class="btn btn-primary" id="save-goal">Сохранить</button>
-            </div>
-        </div>
-    </div>
-
-    <button class="install-btn" id="install-button">+</button>
-
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
     <script>
-        // Data structure
-        let appData = {
-            tasks: [],
-            goals: [],
-            achievements: [],
-            history: [],
-            settings: {
-                theme: 'light',
-                sortBy: 'time',
-                showCompleted: true
-            },
-            stats: {
-                totalTasks: 0,
-                completedTasks: 0,
-                currentStreak: 0,
-                lastActiveDate: null
-            },
-            currentCalendarDate: new Date()
-        };
+        // Логика переключения вкладок
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Убираем активный класс у всех вкладок
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // Добавляем активный класс текущей вкладке
+                tab.classList.add('active');
+                
+                // Скрываем все панели
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.style.display = 'none');
+                
+                // Показываем нужную панель
+                const tabName = tab.getAttribute('data-tab');
+                document.getElementById(`${tabName}-pane`).style.display = 'block';
+            });
+        });
 
-        // Initialize the app
-        function initApp() {
-            loadData();
-            setDate();
-            setupTabs();
-            setupTasks();
-            setupGoals();
-            setupThemes();
-            setupCalendar();
-            setupContextMenu();
-            setupModals();
-            setupPWA();
-            updateUI();
-        }
-
-        // Load data from localStorage
-        function loadData() {
-            const savedData = localStorage.getItem('progressProData');
-            if (savedData) {
-                appData = JSON.parse(savedData);
-                // Convert string dates back to Date objects
-                appData.currentCalendarDate = new Date(appData.currentCalendarDate);
-                appData.tasks.forEach(task => {
-                    if (task.date) task.date = new Date(task.date).toISOString().split('T')[0];
-                });
-            } else {
-                // Initialize with default data if no saved data exists
-                appData.achievements = [
-                    { id: 1, title: "Серия выполненных задач", description: "Выполняйте задачи ежедневно 7 дней подряд", progress: 0, target: 7, icon: "🔥", completed: false },
-                    { id: 2, title: "Целеустремленный", description: "Достигните 10 недельных целей", progress: 0, target: 10, icon: "⭐", completed: false },
-                    { id: 3, title: "Производительность", description: "Выполните все задачи дня 5 раз", progress: 0, target: 5, icon: "🚀", completed: false },
-                    { id: 4, title: "Книжный червь", description: "Прочтите 500 страниц", progress: 75, target: 500, icon: "📚", completed: false }
-                ];
-                
-                // Add example task if no tasks exist
-                if (appData.tasks.length === 0) {
-                    appData.tasks.push({
-                        id: Date.now(),
-                        text: "Пример задачи - нажмите для завершения",
-                        completed: false,
-                        date: new Date().toISOString().split('T')[0],
-                        time: "09:00",
-                        priority: "medium",
-                        subtasks: []
-                    });
-                }
-                
-                saveData();
-            }
-        }
-
-        // Save data to localStorage
-        function saveData() {
-            localStorage.setItem('progressProData', JSON.stringify(appData));
-        }
-
-        // Set current date
-        function setDate() {
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            const today = new Date();
-            document.getElementById('today-date').textContent = today.toLocaleDateString('ru-RU', options);
-        }
-
-        // Setup iOS-style tabs
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Remove active class from all tabs and content
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
-                    // Add active class to clicked tab and corresponding content
-                    tab.classList.add('active');
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
-                    
-                    // Refresh content for specific tabs
-                    if (tabId === 'calendar') {
-                        renderCalendar();
-                    } else if (tabId === 'history') {
-                        renderHistoryTable();
-                    }
-                });
-            });
-        }
-
-        // Setup tasks functionality
-        function setupTasks() {
-            const taskList = document.getElementById('daily-tasks');
-            const taskInput = document.getElementById('daily-input');
-            const addButton = document.getElementById('daily-add');
-            const sortTimeBtn = document.getElementById('sort-time');
-            const sortPriorityBtn = document.getElementById('sort-priority');
-            
-            // Load tasks
-            renderTasks();
-            updateProgress();
-            
-            // Add new task
-            addButton.addEventListener('click', addTask);
-            taskInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addTask();
-            });
-            
-            // Sort tasks
-            sortTimeBtn.addEventListener('click', () => {
-                appData.settings.sortBy = 'time';
-                saveData();
-                renderTasks();
-            });
-            
-            sortPriorityBtn.addEventListener('click', () => {
-                appData.settings.sortBy = 'priority';
-                saveData();
-                renderTasks();
-            });
-            
-            // Mark task as completed
-            taskList.addEventListener('change', (e) => {
-                if (e.target.classList.contains('task-checkbox')) {
-                    const taskId = parseInt(e.target.closest('tr').dataset.id);
-                    const task = appData.tasks.find(t => t.id === taskId);
-                    if (task) {
-                        task.completed = e.target.checked;
-                        if (task.completed) {
-                            appData.stats.completedTasks++;
-                            // Check if all subtasks are completed
-                            if (task.subtasks && task.subtasks.length > 0) {
-                                const allSubtasksCompleted = task.subtasks.every(st => st.completed);
-                                if (allSubtasksCompleted) {
-                                    // Award achievement for completing a task with all subtasks
-                                    updateAchievementProgress('task_with_subtasks', 1);
-                                }
-                            }
-                        } else {
-                            appData.stats.completedTasks--;
-                        }
-                        saveData();
-                        updateProgress();
-                        updateUI();
-                        updateAchievements();
-                    }
-                }
-            });
-            
-            // Make tasks sortable
-            new Sortable(taskList, {
-                handle: '.drag-handle',
-                ghostClass: 'sortable-ghost',
-                chosenClass: 'sortable-chosen',
-                onEnd: function(evt) {
-                    // Reorder tasks based on drag and drop
-                    const today = new Date().toISOString().split('T')[0];
-                    const todayTasks = appData.tasks.filter(task => task.date === today);
-                    
-                    // Get the new order of task IDs
-                    const newOrder = Array.from(taskList.querySelectorAll('tr')).map(tr => parseInt(tr.dataset.id));
-                    
-                    // Reorder the tasks array
-                    const newTasksOrder = [];
-                    newOrder.forEach(id => {
-                        const task = todayTasks.find(t => t.id === id);
-                        if (task) newTasksOrder.push(task);
-                    });
-                    
-                    // Remove today's tasks and add them back in the new order
-                    appData.tasks = appData.tasks.filter(task => task.date !== today);
-                    appData.tasks = appData.tasks.concat(newTasksOrder);
-                    
-                    saveData();
-                }
-            });
-            
-            function addTask() {
-                const taskText = taskInput.value.trim();
-                if (taskText) {
-                    const now = new Date();
-                    const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-                    const date = now.toISOString().split('T')[0];
-                    
-                    const newTask = {
-                        id: Date.now(),
-                        text: taskText,
-                        completed: false,
-                        date: date,
-                        time: time,
-                        priority: 'medium',
-                        subtasks: []
-                    };
-                    
-                    appData.tasks.push(newTask);
-                    appData.stats.totalTasks++;
-                    saveData();
-                    renderTasks();
-                    updateProgress();
-                    updateUI();
-                    
-                    taskInput.value = '';
-                }
-            }
-            
-            function renderTasks() {
-                const today = new Date().toISOString().split('T')[0];
-                let todayTasks = appData.tasks.filter(task => task.date === today);
-                
-                // Sort tasks based on user preference
-                if (appData.settings.sortBy === 'time') {
-                    todayTasks.sort((a, b) => {
-                        const timeA = a.time || '00:00';
-                        const timeB = b.time || '00:00';
-                        return timeA.localeCompare(timeB);
-                    });
-                } else if (appData.settings.sortBy === 'priority') {
-                    const priorityOrder = { high: 0, medium: 1, low: 2 };
-                    todayTasks.sort((a, b) => {
-                        return priorityOrder[a.priority] - priorityOrder[b.priority];
-                    });
-                }
-                
-                const taskList = document.getElementById('daily-tasks');
-                taskList.innerHTML = '';
-                
-                if (todayTasks.length === 0) {
-                    taskList.innerHTML = `
-                        <tr>
-                            <td colspan="4" class="empty-state">
-                                <div class="empty-state-icon">📝</div>
-                                <p>Задачи на сегодня отсутствуют</p>
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    todayTasks.forEach(task => {
-                        const hasSubtasks = task.subtasks && task.subtasks.length > 0;
-                        const completedSubtasks = hasSubtasks ? task.subtasks.filter(st => st.completed).length : 0;
-                        
-                        const tr = document.createElement('tr');
-                        tr.dataset.id = task.id;
-                        tr.innerHTML = `
-                            <td class="checkbox-cell">
-                                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
-                            </td>
-                            <td>
-                                <span class="task-text">${task.text}</span>
-                                ${hasSubtasks ? `<div class="subtask-progress">${completedSubtasks}/${task.subtasks.length}</div>` : ''}
-                            </td>
-                            <td>${task.time}</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <i class="fas fa-bars drag-handle"></i>
-                                    <i class="fas fa-ellipsis-v context-menu-btn" data-id="${task.id}" data-type="task"></i>
-                                </div>
-                            </td>
-                        `;
-                        taskList.appendChild(tr);
-                    });
-                    
-                    // Add event listeners to context menu buttons
-                    document.querySelectorAll('.context-menu-btn').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const id = parseInt(e.currentTarget.dataset.id);
-                            const type = e.currentTarget.dataset.type;
-                            showContextMenu(e.clientX, e.clientY, id, type);
-                        });
-                    });
-                }
-            }
-            
-            function updateProgress() {
-                const today = new Date().toISOString().split('T')[0];
-                const todayTasks = appData.tasks.filter(task => task.date === today);
-                const totalTasks = todayTasks.length;
-                const completedTasks = todayTasks.filter(task => task.completed).length;
-                const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-                
-                document.getElementById('daily-progress').style.width = `${percentage}%`;
-                document.getElementById('daily-percentage').textContent = `${percentage}%`;
-                
-                // Update motivation text
-                const motivationText = document.getElementById('daily-motivation');
-                if (percentage === 0 && totalTasks > 0) {
-                    motivationText.textContent = "Начни выполнять задачи для достижения прогресса!";
-                } else if (percentage < 50) {
-                    motivationText.textContent = "Так держать! Продолжай в том же духе!";
-                } else if (percentage < 100) {
-                    motivationText.textContent = "Отличная работа! Ты уже на полпути!";
-                } else if (percentage === 100 && totalTasks > 0) {
-                    motivationText.textContent = "Потрясающе! Все задачи выполнены!";
-                    // Award achievement for completing all daily tasks
-                    updateAchievementProgress('all_daily_tasks', 1);
-                } else {
-                    motivationText.textContent = "Добавь задачи на сегодня для начала работы!";
-                }
-                
-                // Update streak
-                updateStreak();
-            }
-        }
-
-        // Setup goals functionality
-        function setupGoals() {
-            const goalInput = document.getElementById('goal-input');
-            const addButton = document.getElementById('goal-add');
-            
-            // Load goals
-            renderGoals();
-            updateGoalsProgress();
-            
-            // Add new goal
-            addButton.addEventListener('click', addGoal);
-            goalInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addGoal();
-            });
-            
-            // Make goals list sortable
-            new Sortable(document.getElementById('goals-list'), {
-                handle: '.drag-handle',
-                ghostClass: 'sortable-ghost',
-                chosenClass: 'sortable-chosen',
-                onEnd: function(evt) {
-                    // Reorder goals based on drag and drop
-                    const newOrder = Array.from(document.getElementById('goals-list').querySelectorAll('tr')).map(tr => parseInt(tr.dataset.id));
-                    
-                    // Reorder the goals array
-                    const newGoalsOrder = [];
-                    newOrder.forEach(id => {
-                        const goal = appData.goals.find(g => g.id === id);
-                        if (goal) newGoalsOrder.push(goal);
-                    });
-                    
-                    appData.goals = newGoalsOrder;
-                    saveData();
-                }
-            });
-            
-            function addGoal() {
-                const goalText = goalInput.value.trim();
-                if (goalText) {
-                    const newGoal = {
-                        id: Date.now(),
-                        text: goalText,
-                        completed: false,
-                        progress: 0,
-                        target: 100,
-                        type: 'weekly'
-                    };
-                    
-                    appData.goals.push(newGoal);
-                    saveData();
-                    renderGoals();
-                    updateGoalsProgress();
-                    
-                    goalInput.value = '';
-                }
-            }
-            
-            function renderGoals() {
-                const goalsList = document.getElementById('goals-list');
-                goalsList.innerHTML = '';
-                
-                if (appData.goals.length === 0) {
-                    goalsList.innerHTML = `
-                        <tr>
-                            <td colspan="4" class="empty-state">
-                                <div class="empty-state-icon">🎯</div>
-                                <p>У вас пока нет целей</p>
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    appData.goals.forEach(goal => {
-                        const progressPercentage = Math.round((goal.progress / goal.target) * 100);
-                        const tr = document.createElement('tr');
-                        tr.dataset.id = goal.id;
-                        tr.innerHTML = `
-                            <td class="checkbox-cell">
-                                <input type="checkbox" class="task-checkbox" ${goal.completed ? 'checked' : ''}>
-                            </td>
-                            <td>
-                                <span class="task-text">${goal.text}</span>
-                            </td>
-                            <td>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: ${progressPercentage}%"></div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <i class="fas fa-bars drag-handle"></i>
-                                    <i class="fas fa-ellipsis-v context-menu-btn" data-id="${goal.id}" data-type="goal"></i>
-                                </div>
-                            </td>
-                        `;
-                        goalsList.appendChild(tr);
-                    });
-                    
-                    // Add event listeners to context menu buttons
-                    document.querySelectorAll('.context-menu-btn').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const id = parseInt(e.currentTarget.dataset.id);
-                            const type = e.currentTarget.dataset.type;
-                            showContextMenu(e.clientX, e.clientY, id, type);
-                        });
-                    });
-                    
-                    // Add change event for goal checkboxes
-                    goalsList.addEventListener('change', (e) => {
-                        if (e.target.classList.contains('task-checkbox')) {
-                            const goalId = parseInt(e.target.closest('tr').dataset.id);
-                            const goal = appData.goals.find(g => g.id === goalId);
-                            if (goal) {
-                                goal.completed = e.target.checked;
-                                if (goal.completed) {
-                                    goal.progress = goal.target;
-                                    // Award achievement for completing a goal
-                                    if (goal.type === 'weekly') {
-                                        updateAchievementProgress('weekly_goals', 1);
-                                    } else if (goal.type === 'monthly') {
-                                        updateAchievementProgress('monthly_goals', 1);
-                                    }
-                                } else {
-                                    goal.progress = 0;
-                                }
-                                saveData();
-                                renderGoals();
-                                updateGoalsProgress();
-                                updateAchievements();
-                            }
-                        }
-                    });
-                }
-            }
-            
-            function updateGoalsProgress() {
-                const weeklyGoals = appData.goals.filter(goal => goal.type === 'weekly');
-                const monthlyGoals = appData.goals.filter(goal => goal.type === 'monthly');
-                
-                const completedWeekly = weeklyGoals.filter(goal => goal.completed).length;
-                const completedMonthly = monthlyGoals.filter(goal => goal.completed).length;
-                
-                document.getElementById('weekly-value').textContent = `${completedWeekly}/${weeklyGoals.length}`;
-                document.getElementById('monthly-value').textContent = `${completedMonthly}/${monthlyGoals.length}`;
-            }
-        }
-
-        // Setup calendar functionality
-        function setupCalendar() {
-            const prevMonthBtn = document.getElementById('prev-month');
-            const nextMonthBtn = document.getElementById('next-month');
-            
-            prevMonthBtn.addEventListener('click', () => {
-                appData.currentCalendarDate.setMonth(appData.currentCalendarDate.getMonth() - 1);
-                saveData();
-                renderCalendar();
-            });
-            
-            nextMonthBtn.addEventListener('click', () => {
-                appData.currentCalendarDate.setMonth(appData.currentCalendarDate.getMonth() + 1);
-                saveData();
-                renderCalendar();
-            });
-            
-            renderCalendar();
-        }
+        // Логика модального окна
+        const addHabitBtn = document.getElementById('addHabitBtn');
+        const addHabitModal = document.getElementById('addHabitModal');
+        const closeModal = document.getElementById('closeModal');
+        const habitForm = document.getElementById('habitForm');
         
-        function renderCalendar() {
-            const calendarDays = document.getElementById('calendar-days');
-            const calendarMonth = document.getElementById('calendar-month');
-            const selectedDate = document.getElementById('selected-date');
-            
-            const year = appData.currentCalendarDate.getFullYear();
-            const month = appData.currentCalendarDate.getMonth();
-            
-            // Set calendar title
-            const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-            calendarMonth.textContent = `${monthNames[month]} ${year}`;
-            
-            // Get first day of month and number of days
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            // Adjust for Monday as first day of week (0 = Sunday, 1 = Monday, etc.)
-            let startDay = firstDay === 0 ? 6 : firstDay - 1;
-            
-            // Get days from previous month
-            const daysInPrevMonth = new Date(year, month, 0).getDate();
-            
-            // Clear calendar
-            calendarDays.innerHTML = '';
-            
-            // Add day names
-            const dayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-            dayNames.forEach(day => {
-                const dayElement = document.createElement('div');
-                dayElement.textContent = day;
-                dayElement.style.fontWeight = 'bold';
-                calendarDays.appendChild(dayElement);
-            });
-            
-            // Add days from previous month
-            for (let i = startDay - 1; i >= 0; i--) {
-                const dayElement = document.createElement('div');
-                dayElement.textContent = daysInPrevMonth - i;
-                dayElement.classList.add('calendar-day', 'other-month');
-                calendarDays.appendChild(dayElement);
-            }
-            
-            // Add days from current month
-            const today = new Date();
-            const currentDate = new Date();
-            
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayElement = document.createElement('div');
-                dayElement.textContent = i;
-                dayElement.classList.add('calendar-day');
-                
-                // Check if this day has tasks
-                const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-                const dayTasks = appData.tasks.filter(task => task.date === dateStr);
-                
-                if (dayTasks.length > 0) {
-                    dayElement.classList.add('has-tasks');
-                }
-                
-                // Highlight today
-                if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === i) {
-                    dayElement.classList.add('active');
-                    selectedDate.textContent = `${i} ${monthNames[month]} ${year}`;
-                    renderDateTasks(dateStr);
-                }
-                
-                // Add click event
-                dayElement.addEventListener('click', () => {
-                    document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('active'));
-                    dayElement.classList.add('active');
-                    selectedDate.textContent = `${i} ${monthNames[month]} ${year}`;
-                    renderDateTasks(dateStr);
-                });
-                
-                calendarDays.appendChild(dayElement);
-            }
-            
-            // Calculate how many days from next month to show
-            const totalCells = 42; // 6 rows x 7 days
-            const daysSoFar = startDay + daysInMonth;
-            const daysNextMonth = totalCells - daysSoFar;
-            
-            // Add days from next month
-            for (let i = 1; i <= daysNextMonth; i++) {
-                const dayElement = document.createElement('div');
-                dayElement.textContent = i;
-                dayElement.classList.add('calendar-day', 'other-month');
-                calendarDays.appendChild(dayElement);
-            }
-        }
+        addHabitBtn.addEventListener('click', () => {
+            addHabitModal.classList.add('active');
+        });
         
-        function renderDateTasks(date) {
-            const dateTasksContainer = document.getElementById('date-tasks');
-            const tasks = appData.tasks.filter(task => task.date === date);
-            
-            if (tasks.length === 0) {
-                dateTasksContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📅</div>
-                        <p>На эту дату задач нет</p>
-                    </div>
-                `;
-            } else {
-                let tasksHTML = '';
-                tasks.forEach(task => {
-                    tasksHTML += `
-                        <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} data-id="${task.id}">
-                            <span class="task-text">${task.text}</span>
-                            <span class="task-time">${task.time}</span>
-                        </div>
-                    `;
-                });
-                dateTasksContainer.innerHTML = tasksHTML;
-                
-                // Add event listeners to checkboxes
-                dateTasksContainer.querySelectorAll('.task-checkbox').forEach(checkbox => {
-                    checkbox.addEventListener('change', (e) => {
-                        const taskId = parseInt(e.target.dataset.id);
-                        const task = appData.tasks.find(t => t.id === taskId);
-                        if (task) {
-                            task.completed = e.target.checked;
-                            if (task.completed) {
-                                appData.stats.completedTasks++;
-                            } else {
-                                appData.stats.completedTasks--;
-                            }
-                            saveData();
-                            updateProgress();
-                            updateUI();
-                        }
-                    });
-                });
-            }
-        }
-
-        // Setup context menu
-        function setupContextMenu() {
-            const contextMenu = document.getElementById('context-menu');
-            let currentItemId = null;
-            let currentItemType = null;
-            
-            // Hide context menu when clicking elsewhere
-            document.addEventListener('click', () => {
-                contextMenu.style.display = 'none';
-            });
-            
-            // Prevent context menu from closing when clicking on it
-            contextMenu.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-            
-            // Handle context menu actions
-            contextMenu.querySelectorAll('.context-menu-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    const action = e.currentTarget.dataset.action;
-                    
-                    if (currentItemType === 'task') {
-                        if (action === 'edit') {
-                            openTaskModal(currentItemId);
-                        } else if (action === 'delete') {
-                            deleteTask(currentItemId);
-                        } else if (action === 'subtasks') {
-                            openTaskModal(currentItemId, true);
-                        }
-                    } else if (currentItemType === 'goal') {
-                        if (action === 'edit') {
-                            openGoalModal(currentItemId);
-                        } else if (action === 'delete') {
-                            deleteGoal(currentItemId);
-                        }
-                    }
-                    
-                    contextMenu.style.display = 'none';
-                });
-            });
-            
-            window.showContextMenu = function(x, y, id, type) {
-                currentItemId = id;
-                currentItemType = type;
-                
-                // Adjust position to stay within viewport
-                const menuWidth = 200;
-                const menuHeight = contextMenu.offsetHeight;
-                
-                if (x + menuWidth > window.innerWidth) {
-                    x = window.innerWidth - menuWidth - 10;
-                }
-                
-                if (y + menuHeight > window.innerHeight) {
-                    y = window.innerHeight - menuHeight - 10;
-                }
-                
-                contextMenu.style.left = x + 'px';
-                contextMenu.style.top = y + 'px';
-                contextMenu.style.display = 'block';
-            };
-        }
+        closeModal.addEventListener('click', () => {
+            addHabitModal.classList.remove('active');
+        });
         
-        function openTaskModal(taskId, showSubtasks = false) {
-            const task = appData.tasks.find(t => t.id === taskId);
-            if (!task) return;
-            
-            const modal = document.getElementById('task-modal');
-            const textInput = document.getElementById('edit-task-text');
-            const timeInput = document.getElementById('edit-task-time');
-            const dateInput = document.getElementById('edit-task-date');
-            const prioritySelect = document.getElementById('edit-task-priority');
-            const subtasksContainer = document.getElementById('subtasks-container');
-            
-            // Fill form with task data
-            textInput.value = task.text;
-            timeInput.value = task.time;
-            dateInput.value = task.date;
-            prioritySelect.value = task.priority;
-            
-            // Render subtasks
-            subtasksContainer.innerHTML = '';
-            if (task.subtasks && task.subtasks.length > 0) {
-                task.subtasks.forEach((subtask, index) => {
-                    const subtaskElement = document.createElement('div');
-                    subtaskElement.classList.add('subtask-item');
-                    subtaskElement.innerHTML = `
-                        <input type="checkbox" class="subtask-checkbox" ${subtask.completed ? 'checked' : ''} data-index="${index}">
-                        <input type="text" class="subtask-text" value="${subtask.text}" data-index="${index}">
-                        <button class="action-btn delete-subtask" data-index="${index}"><i class="fas fa-times"></i></button>
-                    `;
-                    subtasksContainer.appendChild(subtaskElement);
-                });
-            }
-            
-            // Add event listeners for subtask actions
-            subtasksContainer.querySelectorAll('.subtask-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-                    const index = parseInt(e.target.dataset.index);
-                    task.subtasks[index].completed = e.target.checked;
-                    saveData();
-                    
-                    // Check if all subtasks are completed
-                    const allCompleted = task.subtasks.every(st => st.completed);
-                    if (allCompleted && !task.completed) {
-                        // Auto-complete the main task if all subtasks are done
-                        task.completed = true;
-                        appData.stats.completedTasks++;
-                        updateProgress();
-                        updateUI();
-                    }
-                    
-                    renderTasks();
-                });
-            });
-            
-            subtasksContainer.querySelectorAll('.subtask-text').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const index = parseInt(e.target.dataset.index);
-                    task.subtasks[index].text = e.target.value;
-                    saveData();
-                });
-            });
-            
-            subtasksContainer.querySelectorAll('.delete-subtask').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const index = parseInt(e.currentTarget.dataset.index);
-                    task.subtasks.splice(index, 1);
-                    saveData();
-                    openTaskModal(taskId); // Refresh the modal
-                });
-            });
-            
-            // Show the modal
-            modal.style.display = 'flex';
-            
-            // Focus on subtasks if needed
-            if (showSubtasks) {
-                document.getElementById('add-subtask').scrollIntoView();
-            }
-        }
+        habitForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Здесь будет логика добавления привычки
+            alert('Привычка добавлена!');
+            addHabitModal.classList.remove('active');
+        });
+
+        // Логика PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
         
-        function openGoalModal(goalId) {
-            const goal = appData.goals.find(g => g.id === goalId);
-            if (!goal) return;
-            
-            const modal = document.getElementById('goal-modal');
-            const textInput = document.getElementById('edit-goal-text');
-            const progressInput = document.getElementById('edit-goal-progress');
-            const targetInput = document.getElementById('edit-goal-target');
-            const typeSelect = document.getElementById('edit-goal-type');
-            
-            // Fill form with goal data
-            textInput.value = goal.text;
-            progressInput.value = goal.progress;
-            targetInput.value = goal.target;
-            typeSelect.value = goal.type;
-            
-            // Show the modal
-            modal.style.display = 'flex';
-        }
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
         
-        function deleteTask(taskId) {
-            if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
-                const taskIndex = appData.tasks.findIndex(t => t.id === taskId);
-                if (taskIndex !== -1) {
-                    const task = appData.tasks[taskIndex];
-                    if (task.completed) {
-                        appData.stats.completedTasks--;
-                    }
-                    appData.stats.totalTasks--;
-                    appData.tasks.splice(taskIndex, 1);
-                    saveData();
-                    renderTasks();
-                    updateProgress();
-                    updateUI();
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
                 }
+                deferredPrompt = null;
             }
-        }
-        
-        function deleteGoal(goalId) {
-            if (confirm('Вы уверены, что хотите удалить эту цель?')) {
-                const goalIndex = appData.goals.findIndex(g => g.id === goalId);
-                if (goalIndex !== -1) {
-                    appData.goals.splice(goalIndex, 1);
-                    saveData();
-                    renderGoals();
-                    updateGoalsProgress();
-                }
-            }
-        }
+        });
 
-        // Setup modals
-        function setupModals() {
-            // Task modal
-            const taskModal = document.getElementById('task-modal');
-            const cancelTaskEdit = document.getElementById('cancel-edit');
-            const saveTask = document.getElementById('save-task');
-            const addSubtaskBtn = document.getElementById('add-subtask');
-            
-            cancelTaskEdit.addEventListener('click', () => {
-                taskModal.style.display = 'none';
-            });
-            
-            taskModal.querySelector('.modal-close').addEventListener('click', () => {
-                taskModal.style.display = 'none';
-            });
-            
-            saveTask.addEventListener('click', () => {
-                const taskId = parseInt(saveTask.dataset.id);
-                const task = appData.tasks.find(t => t.id === taskId);
-                if (task) {
-                    const textInput = document.getElementById('edit-task-text');
-                    const timeInput = document.getElementById('edit-task-time');
-                    const dateInput = document.getElementById('edit-task-date');
-                    const prioritySelect = document.getElementById('edit-task-priority');
-                    
-                    task.text = textInput.value;
-                    task.time = timeInput.value;
-                    task.date = dateInput.value;
-                    task.priority = prioritySelect.value;
-                    
-                    saveData();
-                    renderTasks();
-                    taskModal.style.display = 'none';
-                }
-            });
-            
-            addSubtaskBtn.addEventListener('click', () => {
-                const taskId = parseInt(saveTask.dataset.id);
-                const task = appData.tasks.find(t => t.id === taskId);
-                if (task) {
-                    if (!task.subtasks) {
-                        task.subtasks = [];
-                    }
-                    
-                    task.subtasks.push({
-                        text: 'Новая подзадача',
-                        completed: false
-                    });
-                    
-                    saveData();
-                    openTaskModal(taskId);
-                }
-            });
-            
-            // Goal modal
-            const goalModal = document.getElementById('goal-modal');
-            const cancelGoalEdit = document.getElementById('cancel-goal-edit');
-            const saveGoal = document.getElementById('save-goal');
-            
-            cancelGoalEdit.addEventListener('click', () => {
-                goalModal.style.display = 'none';
-            });
-            
-            goalModal.querySelector('.modal-close').addEventListener('click', () => {
-                goalModal.style.display = 'none';
-            });
-            
-            saveGoal.addEventListener('click', () => {
-                const goalId = parseInt(saveGoal.dataset.id);
-                const goal = appData.goals.find(g => g.id === goalId);
-                if (goal) {
-                    const textInput = document.getElementById('edit-goal-text');
-                    const progressInput = document.getElementById('edit-goal-progress');
-                    const targetInput = document.getElementById('edit-goal-target');
-                    const typeSelect = document.getElementById('edit-goal-type');
-                    
-                    goal.text = textInput.value;
-                    goal.progress = parseInt(progressInput.value);
-                    goal.target = parseInt(targetInput.value);
-                    goal.type = typeSelect.value;
-                    
-                    // Update completion status
-                    goal.completed = goal.progress >= goal.target;
-                    
-                    saveData();
-                    renderGoals();
-                    updateGoalsProgress();
-                    goalModal.style.display = 'none';
-                }
-            });
-            
-            // Close modals when clicking outside
-            document.querySelectorAll('.modal-backdrop').forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
+        // Регистрация Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('SW registered: ', registration);
+                })
+                .catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
                 });
             });
         }
 
-        // Setup themes
-        function setupThemes() {
-            const themeButton = document.querySelector('.theme-button');
-            const themeOptions = document.querySelector('.theme-options');
-            const themeOptionsList = document.querySelectorAll('.theme-option');
+        // Имитация синхронизации
+        document.getElementById('syncBtn').addEventListener('click', () => {
+            const syncBtn = document.getElementById('syncBtn');
+            syncBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Синхронизация';
+            syncBtn.disabled = true;
             
-            // Load saved theme
-            document.body.className = `theme-${appData.settings.theme}`;
-            
-            themeButton.addEventListener('click', () => {
-                themeOptions.classList.toggle('show');
-            });
-            
-            themeOptionsList.forEach(option => {
-                option.addEventListener('click', () => {
-                    const theme = option.getAttribute('data-theme');
-                    document.body.className = `theme-${theme}`;
-                    appData.settings.theme = theme;
-                    saveData();
-                    themeOptions.classList.remove('show');
-                });
-            });
-            
-            // Close theme menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!themeButton.contains(e.target) && !themeOptions.contains(e.target)) {
-                    themeOptions.classList.remove('show');
-                }
-            });
-        }
-
-        // Update streak
-        function updateStreak() {
-            const today = new Date().toISOString().split('T')[0];
-            
-            if (appData.stats.lastActiveDate === today) {
-                return; // Already updated today
-            }
-            
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-            
-            if (appData.stats.lastActiveDate === yesterdayStr) {
-                // Consecutive day
-                appData.stats.currentStreak++;
-            } else if (appData.stats.lastActiveDate !== today) {
-                // Broken streak
-                appData.stats.currentStreak = 1;
-            }
-            
-            appData.stats.lastActiveDate = today;
-            saveData();
-            
-            // Update achievements based on streak
-            updateAchievementProgress('streak', appData.stats.currentStreak);
-        }
-
-        // Update achievements
-        function updateAchievements() {
-            const achievementsList = document.getElementById('achievements-list');
-            achievementsList.innerHTML = '';
-            
-            appData.achievements.forEach(achievement => {
-                const progressPercentage = Math.round((achievement.progress / achievement.target) * 100);
-                
-                const achievementElement = document.createElement('div');
-                achievementElement.classList.add('achievement');
-                if (achievement.completed) {
-                    achievementElement.classList.add('completed');
-                }
-                
-                achievementElement.innerHTML = `
-                    <div class="achievement-icon">${achievement.icon}</div>
-                    <div class="achievement-info">
-                        <div class="achievement-title">${achievement.title}</div>
-                        <div class="achievement-desc">${achievement.description}</div>
-                        <div class="achievement-progress">
-                            <div class="achievement-progress-fill" style="width: ${progressPercentage}%"></div>
-                        </div>
-                    </div>
-                `;
-                
-                achievementsList.appendChild(achievementElement);
-            });
-        }
-        
-        function updateAchievementProgress(achievementType, progress) {
-            let achievementId;
-            
-            switch(achievementType) {
-                case 'streak':
-                    achievementId = 1;
-                    break;
-                case 'weekly_goals':
-                    achievementId = 2;
-                    break;
-                case 'all_daily_tasks':
-                    achievementId = 3;
-                    break;
-                case 'task_with_subtasks':
-                    // This would be a new achievement to add
-                    break;
-                default:
-                    return;
-            }
-            
-            const achievement = appData.achievements.find(a => a.id === achievementId);
-            if (achievement) {
-                achievement.progress = progress;
-                if (achievement.progress >= achievement.target) {
-                    achievement.completed = true;
-                }
-                saveData();
-                updateAchievements();
-            }
-        }
-
-        // Render history table
-        function renderHistoryTable() {
-            const historyTable = document.getElementById('history-table');
-            historyTable.innerHTML = '';
-            
-            // Group tasks by date
-            const tasksByDate = {};
-            appData.tasks.forEach(task => {
-                if (!tasksByDate[task.date]) {
-                    tasksByDate[task.date] = {
-                        total: 0,
-                        completed: 0
-                    };
-                }
-                
-                tasksByDate[task.date].total++;
-                if (task.completed) {
-                    tasksByDate[task.date].completed++;
-                }
-            });
-            
-            // Convert to array and sort by date (newest first)
-            const dates = Object.keys(tasksByDate).sort((a, b) => {
-                return new Date(b) - new Date(a);
-            });
-            
-            if (dates.length === 0) {
-                historyTable.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="empty-state">
-                            <div class="empty-state-icon">📊</div>
-                            <p>История активности отсутствует</p>
-                        </td>
-                    </tr>
-                `;
-            } else {
-                dates.forEach(date => {
-                    const data = tasksByDate[date];
-                    const percentage = Math.round((data.completed / data.total) * 100);
-                    const formattedDate = new Date(date).toLocaleDateString('ru-RU');
-                    
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${formattedDate}</td>
-                        <td>${data.total}</td>
-                        <td>${data.completed}</td>
-                        <td>
-                            <div class="progress-bar" style="width: 100px">
-                                <div class="progress-fill" style="width: ${percentage}%"></div>
-                            </div>
-                        </td>
-                    `;
-                    historyTable.appendChild(tr);
-                });
-            }
-        }
-
-        // Update UI with current data
-        function updateUI() {
-            // Update stats
-            document.getElementById('total-tasks').textContent = appData.stats.totalTasks;
-            document.getElementById('completed-tasks').textContent = appData.stats.completedTasks;
-            
-            const successRate = appData.stats.totalTasks > 0 
-                ? Math.round((appData.stats.completedTasks / appData.stats.totalTasks) * 100) 
-                : 0;
-            document.getElementById('success-rate').textContent = `${successRate}%`;
-            
-            document.getElementById('current-streak').textContent = appData.stats.currentStreak;
-            
-            // Update achievements
-            updateAchievements();
-            
-            // Render week chart
-            renderWeekChart();
-        }
-        
-        function renderWeekChart() {
-            const weekChart = document.getElementById('week-chart');
-            weekChart.innerHTML = '';
-            
-            // Get tasks for the last 7 days
-            const today = new Date();
-            const weekData = [];
-            const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-            
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(today.getDate() - i);
-                const dateStr = date.toISOString().split('T')[0];
-                
-                const dayTasks = appData.tasks.filter(task => task.date === dateStr);
-                const completedTasks = dayTasks.filter(task => task.completed).length;
-                const percentage = dayTasks.length > 0 ? (completedTasks / dayTasks.length) * 100 : 0;
-                
-                weekData.push({
-                    day: dayNames[date.getDay()],
-                    percentage: percentage
-                });
-            }
-            
-            // Find maximum percentage to scale chart
-            const maxPercentage = Math.max(...weekData.map(d => d.percentage), 10); // At least 10% to avoid division by zero
-            
-            // Render chart bars
-            const barWidth = (100 / weekData.length) - 2;
-            
-            weekData.forEach((data, index) => {
-                const barHeight = (data.percentage / maxPercentage) * 180; // 180px is max height
-                const bar = document.createElement('div');
-                bar.classList.add('chart-bar');
-                bar.style.height = `${barHeight}px`;
-                bar.style.left = `${index * (100 / weekData.length) + 1}%`;
-                bar.style.width = `${barWidth}%`;
-                
-                const label = document.createElement('div');
-                label.classList.add('chart-label');
-                label.textContent = data.day;
-                label.style.left = `${index * (100 / weekData.length) + 1}%`;
-                label.style.width = `${barWidth}%`;
-                
-                weekChart.appendChild(bar);
-                weekChart.appendChild(label);
-            });
-        }
-
-        // PWA functionality
-        function setupPWA() {
-            const installButton = document.getElementById('install-button');
-            let deferredPrompt;
-            
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installButton.style.display = 'block';
-            });
-            
-            installButton.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        installButton.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                }
-            });
-            
-            // Generate manifest
-            const manifest = {
-                "name": "Progress Pro - Ежедневный помощник",
-                "short_name": "Progress Pro",
-                "description": "Ежедневный помощник для отслеживания целей и планирования задач",
-                "start_url": "/",
-                "display": "standalone",
-                "background_color": "#f8fafc",
-                "theme_color": "#6d28d9",
-                "icons": [
-                    {
-                        "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDAiIGZpbGw9IiM2RDI4RDkiLz4KPHBhdGggZD0iTTk2IDU2VjEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTU2IDk2SDEzNiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+",
-                        "sizes": "192x192",
-                        "type": "image/svg+xml"
-                    }
-                ]
-            };
-            
-            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-            const manifestURL = URL.createObjectURL(manifestBlob);
-            document.getElementById('manifest').href = manifestURL;
-            
-            // Register Service Worker
-            if ('serviceWorker' in navigator) {
-                const swCode = `
-                    self.addEventListener('install', (event) => {
-                        self.skipWaiting();
-                    });
-                    
-                    self.addEventListener('fetch', (event) => {
-                        // Can add caching for offline work
-                    });
-                `;
-                
-                const swBlob = new Blob([swCode], {type: 'application/javascript'});
-                const swURL = URL.createObjectURL(swBlob);
-                
-                navigator.serviceWorker.register(swURL)
-                    .then(registration => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            }
-        }
-
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
+            setTimeout(() => {
+                syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Синхронизация';
+                syncBtn.disabled = false;
+                alert('Данные синхронизированы!');
+            }, 1500);
+        });
     </script>
 </body>
 </html>
