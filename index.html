@@ -173,6 +173,15 @@
             height: 100%;
             background: var(--primary);
             border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .habit-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
         }
 
         .habit-actions {
@@ -195,6 +204,11 @@
 
         .btn-icon:hover {
             background: var(--primary);
+            color: white;
+        }
+
+        .btn-icon.completed {
+            background: var(--success);
             color: white;
         }
 
@@ -318,6 +332,18 @@
             font-size: 0.9rem;
         }
 
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-light);
+        }
+
         @media (max-width: 768px) {
             .habits-grid {
                 grid-template-columns: 1fr;
@@ -408,74 +434,28 @@
                         </button>
                     </div>
                     
-                    <div class="habits-grid">
-                        <div class="habit-card fade-in">
-                            <div class="habit-title">Утренняя зарядка</div>
-                            <div class="habit-desc">15 минут упражнений после пробуждения</div>
-                            <div class="habit-progress">
-                                <div class="progress-bar" style="width: 75%"></div>
-                            </div>
-                            <div class="habit-stats">
-                                <span>0/21 дней</span>
-                                <span>0%</span>
-                            </div>
-                            <div class="habit-actions">
-                                <div class="btn-icon" title="Отметить выполнение">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="btn-icon" title="Редактировать">
-                                    <i class="fas fa-edit"></i>
-                                </div>
-                                <div class="btn-icon" title="Удалить">
-                                    <i class="fas fa-trash"></i>
-                                </div>
-                            </div>
+                    <div class="habits-grid" id="habitsContainer">
+                        <!-- Привычки будут добавляться динамически -->
+                        <div class="empty-state" id="emptyHabitsState">
+                            <i class="fas fa-seedling"></i>
+                            <h3>У вас пока нет привычек</h3>
+                            <p>Добавьте свою первую привычку, чтобы начать отслеживать прогресс</p>
                         </div>
-                        
-                        <div class="habit-card fade-in">
-                            <div class="habit-title">Чтение книги</div>
-                            <div class="habit-desc">30 минут чтения перед сном</div>
-                            <div class="habit-progress">
-                                <div class="progress-bar" style="width: 90%"></div>
-                            </div>
-                            <div class="habit-stats">
-                                <span>0/21 дней</span>
-                                <span>0%</span>
-                            </div>
-                            <div class="habit-actions">
-                                <div class="btn-icon" title="Отметить выполнение">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="btn-icon" title="Редактировать">
-                                    <i class="fas fa-edit"></i>
-                                </div>
-                                <div class="btn-icon" title="Удалить">
-                                    <i class="fas fa-trash"></i>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="habit-card fade-in">
-                            <div class="habit-title">Прогулка на свежем воздухе</div>
-                            <div class="habit-desc">Минимум 5000 шагов в день</div>
-                            <div class="habit-progress">
-                                <div class="progress-bar" style="width: 60%"></div>
-                            </div>
-                            <div class="habit-stats">
-                                <span>0/21 дней</span>
-                                <span>0%</span>
-                            </div>
-                            <div class="habit-actions">
-                                <div class="btn-icon" title="Отметить выполнение">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div class="btn-icon" title="Редактировать">
-                                    <i class="fas fa-edit"></i>
-                                </div>
-                                <div class="btn-icon" title="Удалить">
-                                    <i class="fas fa-trash"></i>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка Сегодня -->
+            <div class="tab-pane" id="today-pane" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Задачи на сегодня</div>
+                    </div>
+                    <div id="todayHabitsContainer">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-day"></i>
+                            <h3>На сегодня нет активных привычек</h3>
+                            <p>Добавьте привычки и установите для них напоминания</p>
                         </div>
                     </div>
                 </div>
@@ -486,19 +466,19 @@
                 <div class="stats-container">
                     <div class="stat-card">
                         <i class="fas fa-fire fa-2x" style="color: var(--primary);"></i>
-                        <div class="stat-value">14</div>
+                        <div class="stat-value" id="streakValue">0</div>
                         <div class="stat-label">Дней подряд</div>
                     </div>
                     
                     <div class="stat-card">
                         <i class="fas fa-check-circle fa-2x" style="color: var(--success);"></i>
-                        <div class="stat-value">0%</div>
+                        <div class="stat-value" id="completionValue">0%</div>
                         <div class="stat-label">Выполненных привычек</div>
                     </div>
                     
                     <div class="stat-card">
                         <i class="fas fa-trophy fa-2x" style="color: var(--warning);"></i>
-                        <div class="stat-value">0</div>
+                        <div class="stat-value" id="goalsValue">0</div>
                         <div class="stat-label">Завершенных целей</div>
                     </div>
                 </div>
@@ -507,16 +487,25 @@
                     <div class="card-header">
                         <div class="card-title">Прогресс за месяц</div>
                     </div>
-                    <div class="calendar">
-                        <!-- Здесь будет календарь с отметками -->
-                        <div class="calendar-day completed">1</div>
-                        <div class="calendar-day completed">2</div>
-                        <div class="calendar-day completed">3</div>
-                        <div class="calendar-day completed">4</div>
-                        <div class="calendar-day completed">5</div>
-                        <div class="calendar-day">6</div>
-                        <div class="calendar-day">7</div>
-                        <!-- И так далее -->
+                    <div class="calendar" id="calendarContainer">
+                        <!-- Календарь будет генерироваться динамически -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка Цели -->
+            <div class="tab-pane" id="goals-pane" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Мои цели</div>
+                        <button class="btn btn-primary" id="addGoalBtn">
+                            <i class="fas fa-plus"></i> Новая цель
+                        </button>
+                    </div>
+                    <div class="empty-state">
+                        <i class="fas fa-bullseye"></i>
+                        <h3>У вас пока нет целей</h3>
+                        <p>Добавьте цель, чтобы отслеживать свой прогресс</p>
                     </div>
                 </div>
             </div>
@@ -571,6 +560,31 @@
     </div>
 
     <script>
+        // Хранилище данных
+        let habits = JSON.parse(localStorage.getItem('habits')) || [];
+        let currentDate = new Date().toDateString();
+        
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+            renderHabits();
+            updateStats();
+            generateCalendar();
+        });
+        
+        function initApp() {
+            // Проверяем, есть ли данные о текущей дате
+            const lastVisit = localStorage.getItem('lastVisit');
+            if (lastVisit !== currentDate) {
+                // Сбрасываем статус выполнения для всех привычек на новый день
+                habits.forEach(habit => {
+                    habit.completedToday = false;
+                });
+                localStorage.setItem('habits', JSON.stringify(habits));
+                localStorage.setItem('lastVisit', currentDate);
+            }
+        }
+        
         // Логика переключения вкладок
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -585,6 +599,11 @@
                 // Показываем нужную панель
                 const tabName = tab.getAttribute('data-tab');
                 document.getElementById(`${tabName}-pane`).style.display = 'block';
+                
+                // Обновляем контент для вкладки "Сегодня"
+                if (tabName === 'today') {
+                    renderTodayHabits();
+                }
             });
         });
 
@@ -604,11 +623,286 @@
         
         habitForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            // Здесь будет логика добавления привычки
-            alert('Привычка добавлена!');
+            addHabit();
             addHabitModal.classList.remove('active');
         });
-
+        
+        // Функция добавления привычки
+        function addHabit() {
+            const name = document.getElementById('habitName').value;
+            const description = document.getElementById('habitDesc').value;
+            const goal = parseInt(document.getElementById('habitGoal').value) || 21;
+            const time = document.getElementById('habitTime').value;
+            
+            const newHabit = {
+                id: Date.now(),
+                name,
+                description,
+                goal,
+                time,
+                progress: 0,
+                completedDays: 0,
+                completedToday: false,
+                createdAt: new Date().toISOString(),
+                history: []
+            };
+            
+            habits.push(newHabit);
+            saveHabits();
+            renderHabits();
+            updateStats();
+            
+            // Сброс формы
+            document.getElementById('habitForm').reset();
+            document.getElementById('habitGoal').value = 21;
+        }
+        
+        // Функция отрисовки привычек
+        function renderHabits() {
+            const habitsContainer = document.getElementById('habitsContainer');
+            
+            if (habits.length === 0) {
+                habitsContainer.innerHTML = `
+                    <div class="empty-state" id="emptyHabitsState">
+                        <i class="fas fa-seedling"></i>
+                        <h3>У вас пока нет привычек</h3>
+                        <p>Добавьте свою первую привычку, чтобы начать отслеживать прогресс</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            habitsContainer.innerHTML = '';
+            
+            habits.forEach(habit => {
+                const progressPercent = Math.round((habit.completedDays / habit.goal) * 100);
+                const isCompletedToday = habit.completedToday;
+                
+                const habitElement = document.createElement('div');
+                habitElement.className = 'habit-card fade-in';
+                habitElement.dataset.id = habit.id;
+                
+                habitElement.innerHTML = `
+                    <div class="habit-title">${habit.name}</div>
+                    <div class="habit-desc">${habit.description}</div>
+                    <div class="habit-progress">
+                        <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <div class="habit-stats">
+                        <span>${habit.completedDays}/${habit.goal} дней</span>
+                        <span>${progressPercent}%</span>
+                    </div>
+                    <div class="habit-actions">
+                        <div class="btn-icon ${isCompletedToday ? 'completed' : ''}" title="Отметить выполнение" data-action="complete">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="btn-icon" title="Редактировать" data-action="edit">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="btn-icon" title="Удалить" data-action="delete">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                    </div>
+                `;
+                
+                habitsContainer.appendChild(habitElement);
+            });
+            
+            // Добавляем обработчики событий для кнопок
+            document.querySelectorAll('[data-action="complete"]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const habitId = parseInt(this.closest('.habit-card').dataset.id);
+                    toggleHabitCompletion(habitId);
+                });
+            });
+            
+            document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const habitId = parseInt(this.closest('.habit-card').dataset.id);
+                    editHabit(habitId);
+                });
+            });
+            
+            document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const habitId = parseInt(this.closest('.habit-card').dataset.id);
+                    deleteHabit(habitId);
+                });
+            });
+        }
+        
+        // Функция отрисовки привычек на сегодня
+        function renderTodayHabits() {
+            const todayContainer = document.getElementById('todayHabitsContainer');
+            
+            if (habits.length === 0) {
+                todayContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-day"></i>
+                        <h3>На сегодня нет активных привычек</h3>
+                        <p>Добавьте привычки и установите для них напоминания</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            todayContainer.innerHTML = '';
+            
+            habits.forEach(habit => {
+                const progressPercent = Math.round((habit.completedDays / habit.goal) * 100);
+                const isCompletedToday = habit.completedToday;
+                
+                const habitElement = document.createElement('div');
+                habitElement.className = 'habit-card fade-in';
+                habitElement.dataset.id = habit.id;
+                
+                habitElement.innerHTML = `
+                    <div class="habit-title">${habit.name}</div>
+                    <div class="habit-desc">${habit.description}</div>
+                    <div class="habit-progress">
+                        <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <div class="habit-stats">
+                        <span>${habit.completedDays}/${habit.goal} дней</span>
+                        <span>${progressPercent}%</span>
+                    </div>
+                    <div class="habit-actions">
+                        <div class="btn-icon ${isCompletedToday ? 'completed' : ''}" title="Отметить выполнение" data-action="complete">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                `;
+                
+                todayContainer.appendChild(habitElement);
+            });
+            
+            // Добавляем обработчики событий для кнопок
+            document.querySelectorAll('[data-action="complete"]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const habitId = parseInt(this.closest('.habit-card').dataset.id);
+                    toggleHabitCompletion(habitId);
+                });
+            });
+        }
+        
+        // Отметка выполнения привычки
+        function toggleHabitCompletion(habitId) {
+            const habitIndex = habits.findIndex(h => h.id === habitId);
+            if (habitIndex === -1) return;
+            
+            const habit = habits[habitIndex];
+            
+            if (!habit.completedToday) {
+                habit.completedDays += 1;
+                habit.completedToday = true;
+                
+                // Добавляем запись в историю
+                habit.history.push({
+                    date: new Date().toISOString(),
+                    completed: true
+                });
+            } else {
+                habit.completedDays = Math.max(0, habit.completedDays - 1);
+                habit.completedToday = false;
+                
+                // Удаляем последнюю запись из истории
+                habit.history.pop();
+            }
+            
+            saveHabits();
+            renderHabits();
+            renderTodayHabits();
+            updateStats();
+        }
+        
+        // Редактирование привычки
+        function editHabit(habitId) {
+            // В реальном приложении здесь должно быть модальное окно редактирования
+            alert('Функция редактирования будет реализована в следующей версии');
+        }
+        
+        // Удаление привычки
+        function deleteHabit(habitId) {
+            if (confirm('Вы уверены, что хотите удалить эту привычку?')) {
+                habits = habits.filter(h => h.id !== habitId);
+                saveHabits();
+                renderHabits();
+                updateStats();
+            }
+        }
+        
+        // Обновление статистики
+        function updateStats() {
+            const totalHabits = habits.length;
+            const completedHabits = habits.filter(h => h.completedToday).length;
+            const completionRate = totalHabits > 0 ? Math.round((completedHabits / totalHabits) * 100) : 0;
+            
+            // Самый длинный streak
+            let longestStreak = 0;
+            habits.forEach(habit => {
+                if (habit.completedDays > longestStreak) {
+                    longestStreak = habit.completedDays;
+                }
+            });
+            
+            document.getElementById('streakValue').textContent = longestStreak;
+            document.getElementById('completionValue').textContent = `${completionRate}%`;
+            document.getElementById('goalsValue').textContent = habits.filter(h => h.completedDays >= h.goal).length;
+        }
+        
+        // Генерация календаря
+        function generateCalendar() {
+            const calendarContainer = document.getElementById('calendarContainer');
+            calendarContainer.innerHTML = '';
+            
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            
+            // Первый день месяца
+            const firstDay = new Date(year, month, 1);
+            // Последний день месяца
+            const lastDay = new Date(year, month + 1, 0);
+            
+            // Пустые ячейки перед первым днем месяца
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarContainer.appendChild(emptyDay);
+            }
+            
+            // Дни месяца
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                
+                // Проверяем, есть ли выполненные привычки в этот день
+                const dateStr = new Date(year, month, i).toDateString();
+                const hasCompleted = habits.some(habit => 
+                    habit.history.some(record => 
+                        new Date(record.date).toDateString() === dateStr && record.completed
+                    )
+                );
+                
+                if (hasCompleted) {
+                    dayElement.classList.add('completed');
+                }
+                
+                // Отмечаем текущий день
+                if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayElement.classList.add('active');
+                }
+                
+                calendarContainer.appendChild(dayElement);
+            }
+        }
+        
+        // Сохранение привычек в localStorage
+        function saveHabits() {
+            localStorage.setItem('habits', JSON.stringify(habits));
+        }
+        
         // Логика PWA
         let deferredPrompt;
         const installBtn = document.getElementById('installBtn');
@@ -633,7 +927,8 @@
         // Регистрация Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                // Используем относительный путь для GitHub Pages
+                navigator.serviceWorker.register('sw.js')
                 .then(registration => {
                     console.log('SW registered: ', registration);
                 })
@@ -646,11 +941,13 @@
         // Имитация синхронизации
         document.getElementById('syncBtn').addEventListener('click', () => {
             const syncBtn = document.getElementById('syncBtn');
+            const originalHtml = syncBtn.innerHTML;
+            
             syncBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Синхронизация';
             syncBtn.disabled = true;
             
             setTimeout(() => {
-                syncBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Синхронизация';
+                syncBtn.innerHTML = originalHtml;
                 syncBtn.disabled = false;
                 alert('Данные синхронизированы!');
             }, 1500);
